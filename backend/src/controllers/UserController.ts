@@ -8,7 +8,7 @@ const route = express.Router();
 const userService = new UserService();
 
 route.get('/', async (req: Request, res: Response) => {
-    const result = await userService.getAllUsers()
+    const result = await userService.getAllUsers();
     res.json(result);
 });
 
@@ -17,13 +17,16 @@ route.get('/:id', [
 ], async (req: Request, res: Response) => {
     const errors = validationResult(req)
     if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-    const result = await userService.getById(Number.parseInt(req.params.id)).catch(() => {
+
+    try{
+        const result = await userService.getById(Number.parseInt(req.params.id));
+        if(!result){
+            res.status(404).json({code: 404, message: 'Not found'});
+        }
+        res.json(result); 
+    } catch(error){
         res.status(500).json({code: 500, message: 'Internal Server Error'});
-    });
-    if(!result){
-        res.status(404).json({code: 404, message: 'Not found'});
     }
-    res.json(result);
 });
 
 route.get('/username/:username', [
@@ -32,13 +35,15 @@ route.get('/username/:username', [
     const errors = validationResult(req)
     if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    const result = await userService.getByUsername(req.params.username).catch(error => {
-        console.error(error);
-    });
-    if(!result){
-        res.status(404).json({code: 404, message: 'Not found'});
+    try{
+        const result = await userService.getByUsername(req.params.username);
+        if(!result){
+            res.status(404).json({code: 404, message: 'Not found'});
+        }
+        res.json(result);
+    } catch(error){
+        res.status(500).json({code: 500, message: 'Internal Server Error'});
     }
-    res.json(result);
 });
 
 export default route;
