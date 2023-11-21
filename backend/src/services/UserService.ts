@@ -16,6 +16,10 @@ export class UserService{
         return this.getOne(`SELECT * FROM users WHERE username = '${username}'`);
     }
 
+    public async getByUsernameAndPassword(username: string, password: string): Promise<UserDTO | void>{
+        return this.getOne(`SELECT * FROM users WHERE username = '${username}' AND pgp_sym_decrypt(password, '@123456') = '${password}'`);
+    }
+
     private async getOne(query: string): Promise<UserDTO | void>{
         const client = await pool.connect();
 
