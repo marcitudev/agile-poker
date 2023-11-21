@@ -14,18 +14,18 @@ export class UserService{
     }
 
     public async getByUsername(username: string): Promise<UserDTO | void>{
-        return this.getOne(`SELECT * FROM users WHERE username = '${username}'`);
+        return this.getOne(`SELECT * FROM users WHERE LOWER(username) = LOWER('${username}')`);
     }
 
     public async getByUsernameAndPassword(username: string, password: string): Promise<UserDTO | void>{
-        return this.getOne(`SELECT * FROM users WHERE username = '${username}' AND pgp_sym_decrypt(password, '@123456') = '${password}'`);
+        return this.getOne(`SELECT * FROM users WHERE LOWER(username) = LOWER('${username}') AND pgp_sym_decrypt(password, '@123456') = '${password}'`);
     }
 
     public async create(user: User): Promise<UserDTO>{
         const client = await pool.connect();
 
         return new Promise<UserDTO>((resolve, reject) => {
-            client.query(`INSERT INTO users(username, first_name, last_name, password) VALUES('${user.username}', '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '@123456'))`, (error, response) => {
+            client.query(`INSERT INTO users(username, first_name, last_name, password) VALUES(LOWER('${user.username}'), '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '@123456'))`, (error, response) => {
                 if(error) reject();
                 if(response) resolve(UserDTO.toDTO(user));
             });
