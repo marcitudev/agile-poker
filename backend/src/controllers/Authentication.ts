@@ -10,9 +10,7 @@ const route = express.Router();
 const userService = new UserService();
 
 route.get('/login',[
-    body('username').notEmpty().isString().withMessage('Username cannot be empty'),
     body('username').isLength({min: 3, max: 30}).withMessage('Username minimum size is 3 and maximum 30'),
-    body('password').notEmpty().withMessage('Password cannot be empty'),
     body('password').isLength({min: 6, max: 20}).withMessage('Password minimum size is 6 and maximum 20')
 ], async (req: Request, res: Response) => {
     const errors = validationResult(req);
