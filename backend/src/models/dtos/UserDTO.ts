@@ -10,4 +10,8 @@ export class UserDTO{
         this.firstName = fistName;
         this.lastName = lastName;
     }
+
+    public static toDTO(user: UserDTO){
+        return new UserDTO(user.id, user.username, user.firstName, user.lastName);
+    }
 }
