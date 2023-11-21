@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { UserService } from '../services/UserService';
 import { validationResult, body } from 'express-validator'
 import * as jwt from 'jsonwebtoken';
+import { AuthenticationRequest } from '../models/interfaces/AuthenticationRequest';
 
 const route = express.Router();
 
@@ -31,7 +32,7 @@ route.get('/login',[
 
 });
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+export const verifyToken = (req: AuthenticationRequest, res: Response, next: NextFunction) => {
     const token: string = req.headers.authorization ? req.headers.authorization : '';
 
     if(token === '') return res.status(403).json({error: 403, message: 'Token not found'});
@@ -39,7 +40,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     jwt.verify(token, '@123456', (err, decoded) => {
         if(err) return res.status(401).json({error: 401, message: 'Unauthorized'});
         
-        req.body.user = decoded;
+        req.user = decoded;
         next();
     });
 }
