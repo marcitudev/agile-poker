@@ -22,7 +22,7 @@ route.get('/login',[
 
         const result = await userService.getByUsernameAndPassword(username, password);
         if(result){
-            const token = jwt.sign({username}, '@123456', { expiresIn: '30m' });
+            const token = jwt.sign({id: result.id, username}, '@123456', { expiresIn: '30m' });
             res.json({token});
         } else res.status(401).json({code: 401, message: 'Unauthorized'});
     } catch(error){
