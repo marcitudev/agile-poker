@@ -1,4 +1,4 @@
-import { QueryResult } from 'pg';
+import { QueryResult, QueryResultRow } from 'pg';
 import pool from '../config/db';
 import { UserDTO } from '../models/dtos/UserDTO';
 
@@ -44,7 +44,7 @@ export class UserService{
         });
     }
 
-    private buildUsers(result: QueryResult<any>): Array<UserDTO>{
+    private buildUsers(result: QueryResult<QueryResultRow>): Array<UserDTO>{
         const users: Array<UserDTO> = result.rows.map(row => {
             return this.buildUser(row);
         });
@@ -52,7 +52,7 @@ export class UserService{
         return users;
     }
 
-    private buildUser(user: any): UserDTO{
+    private buildUser(user: QueryResultRow): UserDTO{
         return new UserDTO(
             user?.id,
             user?.username,
