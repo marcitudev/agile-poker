@@ -1,28 +1,62 @@
+import { QueryResult } from 'pg';
 import pool from '../config/db';
-import { User } from '../models/User';
+import { UserDTO } from '../models/dtos/UserDTO';
 
 export class UserService{
     
-    public async getAllUsers(): Promise<Array<User>>{
+    public async getAllUsers(): Promise<Array<UserDTO>>{
+        return this.get('SELECT * FROM users');
+    }
+
+    public async getById(id: number): Promise<UserDTO | void>{
+        return this.getOne(`SELECT * FROM users WHERE id = ${id}`);
+    }
+
+    public async getByUsername(username: string): Promise<UserDTO | void>{
+        return this.getOne(`SELECT * FROM users WHERE username = '${username}'`);
+    }
+
+    private async getOne(query: string): Promise<UserDTO | void>{
         const client = await pool.connect();
 
-        return new Promise<Array<User>>((resolve, reject) => {
-            client.query('SELECT * FROM users', (error, response) => {
+        return new Promise<UserDTO | void>((resolve, reject) => {
+            client.query(query, (error, response) => {
                 if(error) {
-                    reject(new Array<User>());
-                } else {
-                    const users: Array<User> = response.rows.map(row => {
-                        return new User(
-                            row?.id,
-                            row?.username,
-                            row?.first_name,
-                            row?.last_name,
-                            row?.password)
-                    });
-        
-                    resolve(users);
+                    reject();
+                } else if(response.rows.length > 0){
+                    resolve(this.buildUser(response.rows[0]));
                 }
+                resolve();
             });
         });
+    }
+
+    private async get(query: string): Promise<Array<UserDTO>>{
+        const client = await pool.connect();
+
+        return new Promise<Array<UserDTO>>((resolve, reject) => {
+            client.query(query, (error, response) => {
+                if(error) {
+                    reject();
+                }
+                resolve(this.buildUsers(response));
+            });
+        });
+    }
+
+    private buildUsers(result: QueryResult<any>): Array<UserDTO>{
+        const users: Array<UserDTO> = result.rows.map(row => {
+            return this.buildUser(row);
+        });
+
+        return users;
+    }
+
+    private buildUser(user: any): UserDTO{
+        return new UserDTO(
+            user?.id,
+            user?.username,
+            user?.first_name,
+            user?.last_name);
     }
 }
