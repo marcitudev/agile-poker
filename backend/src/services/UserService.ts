@@ -1,6 +1,7 @@
 import { QueryResult, QueryResultRow } from 'pg';
 import pool from '../config/db';
 import { UserDTO } from '../models/dtos/UserDTO';
+import { User } from '../models/User';
 
 export class UserService{
     
@@ -20,16 +21,24 @@ export class UserService{
         return this.getOne(`SELECT * FROM users WHERE username = '${username}' AND pgp_sym_decrypt(password, '@123456') = '${password}'`);
     }
 
+    public async create(user: User): Promise<UserDTO>{
+        const client = await pool.connect();
+
+        return new Promise<UserDTO>((resolve, reject) => {
+            client.query(`INSERT INTO users(username, first_name, last_name, password) VALUES('${user.username}', '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '@123456'))`, (error, response) => {
+                if(error) reject();
+                if(response) resolve(UserDTO.toDTO(user));
+            });
+        });
+    }
+
     private async getOne(query: string): Promise<UserDTO | void>{
         const client = await pool.connect();
 
         return new Promise<UserDTO | void>((resolve, reject) => {
             client.query(query, (error, response) => {
-                if(error) {
-                    reject();
-                } else if(response.rows.length > 0){
-                    resolve(this.buildUser(response.rows[0]));
-                }
+                if(error) reject(); 
+                else if(response.rows.length > 0) resolve(this.buildUser(response.rows[0]));
                 resolve();
             });
         });
@@ -40,9 +49,7 @@ export class UserService{
 
         return new Promise<Array<UserDTO>>((resolve, reject) => {
             client.query(query, (error, response) => {
-                if(error) {
-                    reject();
-                }
+                if(error) reject();
                 resolve(this.buildUsers(response));
             });
         });
