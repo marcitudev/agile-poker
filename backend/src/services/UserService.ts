@@ -25,9 +25,26 @@ export class UserService{
         const client = await pool.connect();
 
         return new Promise<UserDTO>((resolve, reject) => {
-            client.query(`INSERT INTO users(username, first_name, last_name, password) VALUES(LOWER('${user.username}'), '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '@123456'))`, (error, response) => {
+            client.query(`INSERT INTO users(username, first_name, last_name, password) VALUES(LOWER('${user.username}'), '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '@123456')) RETURNING *`, (error, response) => {
                 if(error) reject();
-                if(response) resolve(UserDTO.toDTO(user));
+                if(response) resolve(this.buildUser(response.rows[0]));
+            });
+        });
+    }
+
+    public async update(id: number, user: UserDTO): Promise<UserDTO>{
+        const client = await pool.connect();
+
+        return new Promise<UserDTO>((resolve, reject) => {
+            const updateFieldsAndValues: Array<string> = new Array<string>();
+            Object.entries(user).forEach(([key, value]) => {
+                if(key !== 'id' && value) updateFieldsAndValues.push(`${key} = '${value}'`)
+            });
+            if(updateFieldsAndValues.length == 0) reject();
+            const query = `UPDATE users SET ${updateFieldsAndValues.join(', ')} WHERE id = ${id} RETURNING *`;
+            client.query(query, (error, response) => {
+                if(error) reject();
+                if(response) resolve(this.buildUser(response.rows[0]));
             });
         });
     }

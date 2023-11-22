@@ -4,6 +4,7 @@ import { UserService } from '../services/UserService';
 import { validationResult, body } from 'express-validator'
 import * as jwt from 'jsonwebtoken';
 import { AuthenticationRequest } from '../models/interfaces/AuthenticationRequest';
+import { AuthUser } from '../models/interfaces/AuthUser';
 
 const route = express.Router();
 
@@ -38,7 +39,9 @@ export const verifyToken = (req: AuthenticationRequest, res: Response, next: Nex
     jwt.verify(token, '@123456', (err, decoded) => {
         if(err) return res.status(401).json({error: 401, message: 'Unauthorized'});
         
-        req.user = decoded;
+        if(decoded){
+            req.user = <AuthUser> decoded;
+        }
         next();
     });
 }

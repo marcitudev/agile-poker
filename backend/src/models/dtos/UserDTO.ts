@@ -1,17 +1,22 @@
 export class UserDTO{
-    id: number;
+    id: number | undefined;
     username: string;
     firstName: string;
     lastName: string;
 
-    constructor(id: number, username: string, fistName: string, lastName: string){
+    constructor(id: number | undefined, username: string, firstName: string, lastName: string){
         this.id = id;
         this.username = username;
-        this.firstName = fistName;
+        this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public static toDTO(user: UserDTO){
-        return new UserDTO(user.id, user.username, user.firstName, user.lastName);
+    public static fromJson(json: Record<string, string>): UserDTO | undefined{
+        if(Object.keys(json).length == 0) return undefined;
+        const { id, username, firstName, lastName } = json;
+
+        return new UserDTO(id ? Number.parseInt(id) : undefined, username, firstName, lastName);
     }
+
+
 }

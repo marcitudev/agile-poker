@@ -1,8 +1,8 @@
 import { Request } from "express";
-import * as jwt from 'jsonwebtoken';
+import { AuthUser } from "./AuthUser";
 
 
 export interface AuthenticationRequest extends Request{
-    user?: string | jwt.JwtPayload | undefined
+    user?: AuthUser
 
 }
