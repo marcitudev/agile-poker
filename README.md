@@ -1,6 +1,6 @@
 # Agile Poker
 
-Agile Poker is a personal project focused on developing a platform to assist in scoring stories and tasks in agile development methodologies.
+Agile Poker represents a personal effort dedicated to creating and continually improving a platform that helps development teams perform. The main purpose of this project is to offer support in the evaluation and classification of stories and tasks within the context of agile software development methodologies. The platform aims to provide an optimized and intuitive experience, allowing for accurate and agile scoring that enhances efficiency and collaboration within teams.
 
 <img src="https://badgen.net/badge/status/in-progress/ff9000">
 
