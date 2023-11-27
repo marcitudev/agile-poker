@@ -13,6 +13,11 @@ const route = express.Router();
 
 const userService = new UserService();
 
+type KeyValueTuple = [string, string];
+const routesWithoutAuthentication: Array<KeyValueTuple> = [
+    ['POST', '/users']
+];
+
 route.post('/login',[
     body('username').isLength({min: 3, max: 30}).withMessage('Username minimum size is 3 and maximum 30'),
     body('password').isLength({min: 6, max: 20}).withMessage('Password minimum size is 6 and maximum 20')
@@ -35,6 +40,8 @@ route.post('/login',[
 });
 
 export const verifyToken = (req: AuthenticationRequest, res: Response, next: NextFunction) => {
+    if(routesWithoutAuthentication.find(request => request[0] == req.method && request[1] == req.baseUrl)) return next();
+
     const token: string = req.headers.authorization ? req.headers.authorization : '';
 
     if(token === '') return res.status(403).json({error: 403, message: 'Token not found'});
