@@ -26,10 +26,8 @@ export class UserService{
     }
 
     public async create(user: User): Promise<UserDTO>{
-        const client = await pool.connect();
-
         return new Promise<UserDTO>((resolve, reject) => {
-            client.query(`INSERT INTO users(username, first_name, last_name, password) VALUES(LOWER('${user.username}'), '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '${process.env.CRIPTO_PASSWORD}')) RETURNING *`, (error, response) => {
+            pool.query(`INSERT INTO users(username, first_name, last_name, password) VALUES(LOWER('${user.username}'), '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '${process.env.CRIPTO_PASSWORD}')) RETURNING *`, (error, response) => {
                 if(error) reject();
                 if(response) resolve(this.buildUser(response.rows[0]));
             });
@@ -37,8 +35,6 @@ export class UserService{
     }
 
     public async update(id: number, user: UserDTO): Promise<UserDTO>{
-        const client = await pool.connect();
-
         return new Promise<UserDTO>((resolve, reject) => {
             const updateFieldsAndValues: Array<string> = new Array<string>();
             Object.entries(user).forEach(([key, value]) => {
@@ -46,7 +42,7 @@ export class UserService{
             });
             if(updateFieldsAndValues.length == 0) reject();
             const query = `UPDATE users SET ${updateFieldsAndValues.join(', ')} WHERE id = ${id} RETURNING *`;
-            client.query(query, (error, response) => {
+            pool.query(query, (error, response) => {
                 if(error) reject();
                 if(response) resolve(this.buildUser(response.rows[0]));
             });
@@ -54,12 +50,10 @@ export class UserService{
     }
 
     public async delete(id: number, password: string): Promise<void>{
-        const client = await pool.connect();
-
         return new Promise<void>((resolve, reject) => {
             try{
                 const query = `DELETE FROM users WHERE id = ${id} AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`;
-                client.query(query);
+                pool.query(query);
                 resolve();
             } catch(e){
                 reject();
@@ -68,10 +62,8 @@ export class UserService{
     }
 
     private async getOne(query: string): Promise<UserDTO | void>{
-        const client = await pool.connect();
-
         return new Promise<UserDTO | void>((resolve, reject) => {
-            client.query(query, (error, response) => {
+            pool.query(query, (error, response) => {
                 if(error) reject(); 
                 else if(response.rows.length > 0) resolve(this.buildUser(response.rows[0]));
                 resolve();
@@ -80,10 +72,8 @@ export class UserService{
     }
 
     private async get(query: string): Promise<Array<UserDTO>>{
-        const client = await pool.connect();
-
         return new Promise<Array<UserDTO>>((resolve, reject) => {
-            client.query(query, (error, response) => {
+            pool.query(query, (error, response) => {
                 if(error) reject();
                 resolve(this.buildUsers(response));
             });
