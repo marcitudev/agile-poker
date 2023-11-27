@@ -1,5 +1,5 @@
 import { QueryResult, QueryResultRow } from 'pg';
-import pool from '../config/db';
+import pool from '../config/db.example';
 import { UserDTO } from '../models/dtos/UserDTO';
 import { User } from '../models/User';
 
@@ -13,19 +13,23 @@ export class UserService{
         return this.getOne(`SELECT * FROM users WHERE id = ${id}`);
     }
 
+    public async getByIdAndPassword(id: number, password: string): Promise<UserDTO | void>{
+        return this.getOne(`SELECT * FROM users WHERE id = ${id} AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`);
+    }
+
     public async getByUsername(username: string): Promise<UserDTO | void>{
         return this.getOne(`SELECT * FROM users WHERE LOWER(username) = LOWER('${username}')`);
     }
 
     public async getByUsernameAndPassword(username: string, password: string): Promise<UserDTO | void>{
-        return this.getOne(`SELECT * FROM users WHERE LOWER(username) = LOWER('${username}') AND pgp_sym_decrypt(password, '@123456') = '${password}'`);
+        return this.getOne(`SELECT * FROM users WHERE LOWER(username) = LOWER('${username}') AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`);
     }
 
     public async create(user: User): Promise<UserDTO>{
         const client = await pool.connect();
 
         return new Promise<UserDTO>((resolve, reject) => {
-            client.query(`INSERT INTO users(username, first_name, last_name, password) VALUES(LOWER('${user.username}'), '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '@123456')) RETURNING *`, (error, response) => {
+            client.query(`INSERT INTO users(username, first_name, last_name, password) VALUES(LOWER('${user.username}'), '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '${process.env.CRIPTO_PASSWORD}')) RETURNING *`, (error, response) => {
                 if(error) reject();
                 if(response) resolve(this.buildUser(response.rows[0]));
             });
@@ -46,6 +50,20 @@ export class UserService{
                 if(error) reject();
                 if(response) resolve(this.buildUser(response.rows[0]));
             });
+        });
+    }
+
+    public async delete(id: number, password: string): Promise<void>{
+        const client = await pool.connect();
+
+        return new Promise<void>((resolve, reject) => {
+            try{
+                const query = `DELETE FROM users WHERE id = ${id} AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`;
+                client.query(query);
+                resolve();
+            } catch(e){
+                reject();
+            }
         });
     }
 

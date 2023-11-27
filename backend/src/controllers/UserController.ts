@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
-import { validationResult, check, body } from 'express-validator'
+import { validationResult, check, body, query } from 'express-validator'
 import { UserDTO } from '../models/dtos/UserDTO';
 import { AuthenticationRequest } from '../models/interfaces/AuthenticationRequest';
 
@@ -85,6 +85,27 @@ route.put('/', [
         if(req.user && req.user.id) {
             const result = await userService.update(req.user.id, user);
             res.json(result);
+        } else {
+            throw new Error();
+        }
+    } catch(error){
+        res.status(500).json({code: 500, message: 'Internal Server Error'});
+    }
+});
+
+route.delete('/', [
+    query('password').isLength({min: 3, max: 30}).withMessage('Password is required for delete user')
+], async (req: AuthenticationRequest, res: Response) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    try{
+        if(req.user && req.user.id) {
+            const existsByUsernameAndPassword = await userService.getByIdAndPassword(req.user.id, req.query.password as string);
+            if(!existsByUsernameAndPassword) return res.status(400).json({code: 400, message: 'Inconsistent data'});
+        
+            await userService.delete(req.user.id, req.query.password as string);
+            res.status(204).json(undefined);
         } else {
             throw new Error();
         }
