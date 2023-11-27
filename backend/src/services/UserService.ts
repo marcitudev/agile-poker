@@ -1,5 +1,5 @@
 import { QueryResult, QueryResultRow } from 'pg';
-import pool from '../config/db.example';
+import pool from '../config/db';
 import { UserDTO } from '../models/dtos/UserDTO';
 import { User } from '../models/User';
 
