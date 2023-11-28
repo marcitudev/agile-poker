@@ -43,4 +43,20 @@ route.post('/', [
     }
 });
 
+route.get('/my-rooms', async (req: AuthenticationRequest, res: Response) => {
+    try{
+        if(req.user && req.user.id) {
+            const existsById = await userService.getById(req.user.id);
+            if(!existsById) return res.status(400).json({code: 404, message: 'User not found'});
+
+            const result = await roomService.getByUserId(req.user.id);
+            res.json(result);
+        } else {
+            throw new Error();
+        }
+    } catch(error){
+        res.status(500).json({code: 500, message: 'Internal Server Error'});
+    }
+});
+
 export default route;

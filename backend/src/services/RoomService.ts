@@ -16,6 +16,10 @@ export class RoomService{
         return this.getOne(`SELECT * FROM rooms WHERE UPPER(code) = UPPER('${code}')`);
     }
 
+    public getByUserId(userId: number): Promise<Array<RoomDTO>> {
+        return this.get(`SELECT DISTINCT(r.*) FROM rooms r LEFT JOIN users_rooms ur ON ur.room_id = r.id WHERE r.user_id = ${userId} OR ur.user_id = ${userId}`);
+    }
+
     public getByNameAndUserId(name: string, userId: number): Promise<RoomDTO | void> {
         return this.getOne(`SELECT * FROM rooms WHERE LOWER(RTRIM(LTRIM(name))) = LOWER(RTRIM(LTRIM('${name}'))) AND user_id = ${userId}`);
     }
