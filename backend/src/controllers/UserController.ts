@@ -65,7 +65,7 @@ route.post('/', [
 });
 
 route.put('/', [
-    body('id').isEmpty().withMessage('cannot pass the ID into the body'),
+    body('id').isEmpty().withMessage('Cannot pass the ID into the body'),
     body('username').optional().isLength({min: 3, max: 30}).withMessage('Username minimum size is 3 and maximum 30'),
     body('firstName').optional().isLength({min: 3, max: 30}).withMessage('First name minimum size is 3 and maximum 30'),
     body('lastName').optional().isLength({min: 3, max: 30}).withMessage('Last name minimum size is 3 and maximum 30')
