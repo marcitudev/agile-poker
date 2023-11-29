@@ -101,8 +101,8 @@ route.delete('/', [
 
     try{
         if(req.user && req.user.id) {
-            const existsByUsernameAndPassword = await userService.getByIdAndPassword(req.user.id, req.query.password as string);
-            if(!existsByUsernameAndPassword) return res.status(400).json({code: 400, message: 'Inconsistent data'});
+            const existsByIdAndPassword = await userService.getByIdAndPassword(req.user.id, req.query.password as string);
+            if(!existsByIdAndPassword) return res.status(400).json({code: 400, message: 'Invalid password'});
         
             await userService.delete(req.user.id, req.query.password as string);
             res.status(204).json(undefined);
