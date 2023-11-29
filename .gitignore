@@ -1,2 +1,9 @@
+#global
 frontend/node_modules
 backend/node_modules
+.vscode
+.hintrc
+
+#backend
+.env
+db.ts
