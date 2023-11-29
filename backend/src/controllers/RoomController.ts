@@ -59,4 +59,32 @@ route.get('/my-rooms', async (req: AuthenticationRequest, res: Response) => {
     }
 });
 
+route.post('/enter', [
+    body('code').isLength({min:6, max:6}).withMessage('Code is required and size is 6'),
+    body('password').optional().isLength({min:3, max:20}).withMessage('Password minimum size is 3 and maximum 30')
+], async (req: AuthenticationRequest, res: Response) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    try{
+        const room = await roomService.getByCode(req.body['code']);
+        if(!room) return res.status(404).json({error: 404, message: 'Room not found'});
+
+        const roomByIdAndPassword = await roomService.getByIdAndPassword(room.id, req.body['password']);
+        if(!roomByIdAndPassword) return res.status(400).json({error: 400, message: 'Invalid password'});
+        
+        if(req.user && req.user.id){
+            const userCanEnterTheRoom = await roomService.userCanEnterTheRoom(req.user.id, room.id);
+            if(!userCanEnterTheRoom) return res.status(400).json({error: 400, message: 'You are already part of this room'});
+
+            await roomService.enterTheRoom(req.user?.id, room.id);
+            res.json();
+        } else {
+            throw new Error();
+        }
+    } catch(error) {
+        res.status(500).json({code: 500, message: 'Internal Server Error'});
+    }
+});
+
 export default route;

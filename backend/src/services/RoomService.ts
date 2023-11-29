@@ -13,7 +13,7 @@ export class RoomService{
     }
 
     public getByCode(code: string): Promise<RoomDTO | void>{
-        return this.getOne(`SELECT * FROM rooms WHERE UPPER(code) = UPPER('${code}')`);
+        return this.getOne(`SELECT * FROM rooms WHERE UPPER(RTRIM(LTRIM(code))) = UPPER(RTRIM(LTRIM('${code}')))`);
     }
 
     public getByUserId(userId: number): Promise<Array<RoomDTO>> {
@@ -22,6 +22,10 @@ export class RoomService{
 
     public getByNameAndUserId(name: string, userId: number): Promise<RoomDTO | void> {
         return this.getOne(`SELECT * FROM rooms WHERE LOWER(RTRIM(LTRIM(name))) = LOWER(RTRIM(LTRIM('${name}'))) AND user_id = ${userId}`);
+    }
+
+    public getByIdAndPassword(roomId: number, password?: string){
+        return this.getOne(`SELECT * FROM rooms WHERE id = ${roomId} AND (pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = ${password ? "'" + password + "'" : 'NULL'} OR password IS NULL)`);
     }
 
     public create(userId: number, room: Room): Promise<RoomDTO>{
@@ -36,6 +40,29 @@ export class RoomService{
             } catch(e){
                 reject();
             }
+        });
+    }
+
+    public userCanEnterTheRoom(userId: number, roomId: number): Promise<boolean>{
+        return new Promise<boolean>((resolve, reject) => {
+            const query = `SELECT COUNT(*) FROM rooms r LEFT JOIN users_rooms ur ON ur.room_id = r.id WHERE r.id = ${roomId} AND (r.user_id = ${userId} OR ur.user_id = ${userId})`;
+            pool.query(query, (error, response) => {
+                if(error) reject();
+                if(response) {
+                    const count = Number.parseInt(response.rows[0].count);
+                    resolve(count == 0 ? true : false);
+                }
+            });
+        });
+    }
+
+    public enterTheRoom(userId: number, roomId: number): Promise<void>{
+        return new Promise<void>((resolve, reject) => {
+            const query = `INSERT INTO users_rooms(user_id, room_id) VALUES(${userId}, ${roomId})`;
+            pool.query(query, (error, response) => {
+                if(error) reject();
+                if(response) resolve();
+            });
         });
     }
 
