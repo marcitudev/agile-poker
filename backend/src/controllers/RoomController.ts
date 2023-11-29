@@ -61,7 +61,7 @@ route.get('/my-rooms', async (req: AuthenticationRequest, res: Response) => {
 
 route.post('/enter', [
     body('code').isLength({min:6, max:6}).withMessage('Code is required and size is 6'),
-    body('password').optional().isLength({min:3, max:20}).withMessage('Password minimum size is 3 and maximum 30')
+    body('password').optional().isLength({min:3, max:20}).withMessage('Password minimum size is 3 and maximum 20')
 ], async (req: AuthenticationRequest, res: Response) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -82,6 +82,32 @@ route.post('/enter', [
         } else {
             throw new Error();
         }
+    } catch(error) {
+        res.status(500).json({code: 500, message: 'Internal Server Error'});
+    }
+});
+
+route.delete('/', [
+    body('id').isNumeric().withMessage('Id is required and should be numeric'),
+    body('password').optional().isLength({min:3, max:20}).withMessage('Password minimum size is 3 and maximum 20')
+], async (req: AuthenticationRequest, res: Response) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    try{
+        const room = await roomService.getById(req.body['id']);
+        if(!room) return res.status(404).json({error: 404, message: 'Room not found'});
+    
+        const roomByIdAndPassword = await roomService.getByIdAndPassword(room.id, req.body['password']);
+        if(!roomByIdAndPassword) return res.status(400).json({error: 400, message: 'Invalid password'});
+    
+        if(room.user?.id == req.user?.id) {
+            await roomService.delete(room.id, req.body['password']);
+        } else {
+            return res.status(401).json({error: 401, message: 'You cannot delete this room'})
+        }
+
+        res.status(204).json();
     } catch(error) {
         res.status(500).json({code: 500, message: 'Internal Server Error'});
     }

@@ -16,6 +16,10 @@ export class RoomService{
         return this.getOne(`SELECT * FROM rooms WHERE UPPER(RTRIM(LTRIM(code))) = UPPER(RTRIM(LTRIM('${code}')))`);
     }
 
+    public getById(id: number): Promise<RoomDTO | void>{
+        return this.getOne(`SELECT * FROM rooms WHERE id = ${id}`);
+    }
+
     public getByUserId(userId: number): Promise<Array<RoomDTO>> {
         return this.get(`SELECT DISTINCT(r.*) FROM rooms r LEFT JOIN users_rooms ur ON ur.room_id = r.id WHERE r.user_id = ${userId} OR ur.user_id = ${userId}`);
     }
@@ -59,6 +63,16 @@ export class RoomService{
     public enterTheRoom(userId: number, roomId: number): Promise<void>{
         return new Promise<void>((resolve, reject) => {
             const query = `INSERT INTO users_rooms(user_id, room_id) VALUES(${userId}, ${roomId})`;
+            pool.query(query, (error, response) => {
+                if(error) reject();
+                if(response) resolve();
+            });
+        });
+    }
+
+    public delete(roomId: number, password?: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const query = `DELETE FROM rooms WHERE id = ${roomId} AND (pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = ${password ? "'" + password + "'" : 'NULL'} OR password IS NULL)`;
             pool.query(query, (error, response) => {
                 if(error) reject();
                 if(response) resolve();
