@@ -51,13 +51,11 @@ export class UserService{
 
     public async delete(id: number, password: string): Promise<void>{
         return new Promise<void>((resolve, reject) => {
-            try{
-                const query = `DELETE FROM users WHERE id = ${id} AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`;
-                pool.query(query);
-                resolve();
-            } catch(e){
-                reject();
-            }
+            const query = `DELETE FROM users WHERE id = ${id} AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`;
+            pool.query(query, (error, response) => {
+                if(error) reject();
+                if(response) resolve();
+            });
         });
     }
 
