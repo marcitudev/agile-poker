@@ -14,6 +14,11 @@ export function runMigrations(): Promise<void> {
             const files = fs.readdirSync(migrationsPath);
     
             for (const [index, file] of files.entries()) {
+                const isCorrect = await verifyFile(file);
+                if(!isCorrect) {
+                    reject(`Migration ${file} does not follow the established pattern for the file name`);
+                }
+
                 const filePath = path.join(migrationsPath, file);
     
                 const stat = fs.statSync(filePath);
@@ -37,6 +42,13 @@ export function runMigrations(): Promise<void> {
             reject(error);
         }
     });
+}
+
+async function verifyFile(file: string){
+    const pattern: RegExp = /^V\d{3}__.{2,}\.sql$/;
+    const match: RegExpMatchArray | null = file.match(pattern);
+
+    return match;
 }
 
 async function createMigrationsSchemaHistoryTable(): Promise<void>{

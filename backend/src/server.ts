@@ -22,5 +22,5 @@ app.use('/rooms', verifyToken, roomsController);
 
 app.listen(3000, () => {
     console.log('--- Running on port 3000 ---');
-    runMigrations().then(() => console.log('')).catch(() => { throw new Error('Migrations not applied') });
+    runMigrations().then(() => console.log('')).catch((e) => { throw new Error(`Migrations not applied: ${e}`) });
 });
