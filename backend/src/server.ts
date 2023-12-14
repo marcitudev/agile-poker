@@ -5,6 +5,7 @@ import authentication from './controllers/Authentication';
 import { verifyToken } from './controllers/Authentication';
 import roomsController from './controllers/RoomController'
 import { runMigrations } from './config/migrations';
+import sprintsController from './controllers/SprintController';
 
 const app = express();
 const route = Router();
@@ -19,6 +20,7 @@ app.use(route);
 app.use('/authentication', authentication);
 app.use('/users', verifyToken, usersController);
 app.use('/rooms', verifyToken, roomsController);
+app.use('/sprints', verifyToken, sprintsController);
 
 app.listen(3000, () => {
     console.log('--- Running on port 3000 ---');

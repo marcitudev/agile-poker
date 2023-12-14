@@ -3,10 +3,12 @@ import pool from "../config/db";
 import { RoomDTO } from "../models/dtos/RoomDTO";
 import { UserService } from "./UserService";
 import { Room } from "../models/Room";
+import { SprintService } from "./SprintService";
 
 export class RoomService{
 
     userService = new UserService();
+    sprintService = new SprintService();
 
     public getAllRooms(): Promise<Array<RoomDTO>>{
         return this.get('SELECT * FROM rooms');
@@ -28,8 +30,12 @@ export class RoomService{
         return this.getOne(`SELECT * FROM rooms WHERE LOWER(RTRIM(LTRIM(name))) = LOWER(RTRIM(LTRIM('${name}'))) AND user_id = ${userId}`);
     }
 
-    public getByIdAndPassword(roomId: number, password?: string){
+    public getByIdAndPassword(roomId: number, password?: string): Promise<RoomDTO | void>{
         return this.getOne(`SELECT * FROM rooms WHERE id = ${roomId} AND (pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = ${password ? "'" + password + "'" : 'NULL'} OR password IS NULL)`);
+    }
+
+    public getBySprintId(sprintId: number): Promise<RoomDTO | void>{
+        return this.getOne(`SELECT * FROM rooms r WHERE r.id = (SELECT room_id FROM sprints s WHERE s.id = ${sprintId})`);
     }
 
     public create(userId: number, room: Room): Promise<RoomDTO>{
@@ -107,6 +113,7 @@ export class RoomService{
 
     private async buildRoom(room: QueryResultRow): Promise<RoomDTO>{
         const user = await this.userService.getById(room?.user_id);
+        const sprints = await this.sprintService.getByRoomId(room?.id);
         return new RoomDTO(
             room?.id,
             room?.name,
@@ -114,7 +121,8 @@ export class RoomService{
             room?.host_votes,
             room?.card_value_type,
             user ? user : undefined,
-            room?.created_at
+            room?.created_at,
+            sprints
          );
     }
 
