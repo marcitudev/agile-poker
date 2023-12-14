@@ -65,7 +65,7 @@ route.post('/', [
 });
 
 route.put('/', [
-    body('id').isEmpty().withMessage('cannot pass the ID into the body'),
+    body('id').isEmpty().withMessage('Cannot pass the ID into the body'),
     body('username').optional().isLength({min: 3, max: 30}).withMessage('Username minimum size is 3 and maximum 30'),
     body('firstName').optional().isLength({min: 3, max: 30}).withMessage('First name minimum size is 3 and maximum 30'),
     body('lastName').optional().isLength({min: 3, max: 30}).withMessage('Last name minimum size is 3 and maximum 30')
@@ -101,8 +101,8 @@ route.delete('/', [
 
     try{
         if(req.user && req.user.id) {
-            const existsByUsernameAndPassword = await userService.getByIdAndPassword(req.user.id, req.query.password as string);
-            if(!existsByUsernameAndPassword) return res.status(400).json({code: 400, message: 'Inconsistent data'});
+            const existsByIdAndPassword = await userService.getByIdAndPassword(req.user.id, req.query.password as string);
+            if(!existsByIdAndPassword) return res.status(400).json({code: 400, message: 'Invalid password'});
         
             await userService.delete(req.user.id, req.query.password as string);
             res.status(204).json(undefined);
