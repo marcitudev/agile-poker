@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS tasks(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(50) NOT NULL CHECK(LENGTH(name) >= 3 AND LENGTH(name) <= 50),
-	created_at DATE NOT NULL DEFAULT current_date,
+	created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 	status INT NULL,
 	punctuation NUMERIC(3,2) NULL,
 	sprint_id INT NOT NULL,

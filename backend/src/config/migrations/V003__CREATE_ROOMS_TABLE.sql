@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS rooms(
     user_id INT NOT NULL,
 	host_votes BOOLEAN NOT NULL,
 	card_value_type INT NOT NULL,
-	created_at DATE NOT NULL DEFAULT current_date,
+	created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 	password BYTEA NULL,
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
