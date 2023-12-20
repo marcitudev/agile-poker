@@ -38,6 +38,10 @@ export class RoomService{
         return this.getOne(`SELECT * FROM rooms r WHERE r.id = (SELECT room_id FROM sprints s WHERE s.id = ${sprintId})`);
     }
 
+    public getByTaskId(taskId: number): Promise<RoomDTO | void>{
+        return this.getOne(`SELECT r.* FROM rooms r JOIN sprints s ON s.room_id = r.id JOIN tasks t ON t.sprint_id = s.id WHERE t.id = ${taskId}`);
+    }
+
     public create(userId: number, room: Room): Promise<RoomDTO>{
         room.code = this.generateRoomCode();
         return new Promise<RoomDTO>((resolve, reject) => {

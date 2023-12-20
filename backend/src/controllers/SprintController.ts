@@ -128,7 +128,7 @@ const verifySprintAuthenticity = async (id: number, req: AuthenticationRequest) 
 
     const room = await roomService.getBySprintId(id);
     if(!room) return {success: false, code: 404, message: 'Room not found'};
-    else if(room.user?.id !== req.user?.id) return {success: false, code: 401, message: 'Yout cannot delete this sprint'};
+    else if(room.user?.id !== req.user?.id) return {success: false, code: 401, message: 'Yout cannot modify or delete this sprint'};
 
     return {success: true};
 }
