@@ -2,7 +2,7 @@ import { TaskStatus } from "../models/enums/TaskStatus";
 
 export class TaskStatusHelper{
 
-    static getOrdinal(index: number | string): TaskStatus{
+    static getOrdinal(index: number | string): number{
         if(typeof(index) === 'string'){
             return TaskStatus[index as keyof typeof TaskStatus];
         }

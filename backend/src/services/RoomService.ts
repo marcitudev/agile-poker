@@ -4,6 +4,8 @@ import { RoomDTO } from "../models/dtos/RoomDTO";
 import { UserService } from "./UserService";
 import { Room } from "../models/Room";
 import { SprintService } from "./SprintService";
+import { CardValueTypeHelper } from "../helpers/CardValueTypeHelper";
+import { CardValueType } from "../models/enums/CardValueType";
 
 export class RoomService{
 
@@ -44,15 +46,37 @@ export class RoomService{
 
     public create(userId: number, room: Room): Promise<RoomDTO>{
         room.code = this.generateRoomCode();
-        return new Promise<RoomDTO>((resolve, reject) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise<RoomDTO>(async (resolve, reject) => {
+            const client = await pool.connect();
             try {
-                const query = `INSERT INTO rooms(name, code, host_votes, card_value_type, user_id, password) VALUES(RTRIM(LTRIM('${room.name}')), '${this.generateRoomCode()}', ${room.hostVotes}, ${room.cardValueType}, ${userId}, ${room.password ? "pgp_sym_encrypt('" + room.password + "','" + process.env.CRIPTO_PASSWORD + "')" : null}) RETURNING *`;
-                pool.query(query, (error, response) => {
-                    if(error) reject();
-                    if(response) resolve(this.buildRoom(response.rows[0]));
-                });
+                await client.query('BEGIN');
+                
+                const roomQuery = `INSERT INTO rooms(name, code, host_votes, card_value_type, user_id, password) VALUES(RTRIM(LTRIM('${room.name}')), '${this.generateRoomCode()}', ${room.hostVotes}, ${CardValueTypeHelper.getOrdinal(room.cardValueType)}, ${userId}, ${room.password ? "pgp_sym_encrypt('" + room.password + "','" + process.env.CRIPTO_PASSWORD + "')" : null}) RETURNING *`;
+                const roomPersist = await client.query(roomQuery);
+                const roomPersisted = await this.buildRoom(roomPersist.rows[0]);
+
+                if(CardValueTypeHelper.getOrdinal(room.cardValueType) === CardValueType['CUSTOM']){
+                    const cardValuesQuery = `INSERT INTO custom_card_values(values, room_id) VALUES(ARRAY[${room.cardValues}], ${(roomPersisted).id}) RETURNING values`;
+                    const cardValuesPersist = await client.query(cardValuesQuery);
+
+                    if(roomPersist.rows[0] && cardValuesPersist.rows[0]){
+                        await client.query('COMMIT');
+                        roomPersisted.cardValues = cardValuesPersist.rows[0].values;
+                        resolve(roomPersisted);
+                    } 
+                    else {
+                        await client.query('ROLLBACK');
+                        reject();
+                    }
+                }
+
+                resolve(roomPersisted);
             } catch(e){
+                await client.query('ROLLBACK');
                 reject();
+            } finally {
+                client.release();
             }
         });
     }
@@ -118,16 +142,41 @@ export class RoomService{
     private async buildRoom(room: QueryResultRow): Promise<RoomDTO>{
         const user = await this.userService.getById(room?.user_id);
         const sprints = await this.sprintService.getByRoomId(room?.id);
+        let cardValues;
+        if(room?.card_value_type === CardValueType['CUSTOM']){
+            cardValues = await this.getCustomCardValuesByRoomId(room?.id);
+        }
         return new RoomDTO(
             room?.id,
             room?.name,
             room?.code,
             room?.host_votes,
-            room?.card_value_type,
+            CardValueType[room?.card_value_type as keyof typeof CardValueType],
             user ? user : undefined,
             room?.created_at,
-            sprints
+            sprints,
+            cardValues
          );
+    }
+
+    private async createCustomCardValues(id: number, values: Array<number>): Promise<Array<number>>{
+        return new Promise<Array<number>>((resolve, reject) => {
+            const query = `INSERT INTO custom_card_values(values, room_id) VALUES(ARRAY[${values}], ${id}) RETURNING values`;
+            pool.query(query, (error, response) => {
+                if(error) reject();
+                resolve(response.rows[0].values);
+            });
+        });
+    }
+    
+    private async getCustomCardValuesByRoomId(id: number): Promise<Array<number>>{
+        return new Promise<Array<number>>((resolve, reject) => {
+            const query = `SELECT values FROM custom_card_values WHERE room_id = ${id}`;
+            pool.query(query, (error, response) => {
+                if(error) reject();
+                resolve(response.rows[0] ? response.rows[0].values : undefined);
+            });
+        });
     }
 
     private generateRoomCode(): string {
@@ -144,5 +193,6 @@ export class RoomService{
         if(codeAlreadyExists) this.generateRoomCode();
       
         return code;
-      }
+    }
+
 }

@@ -38,6 +38,32 @@ route.post('/', [
     }
 });
 
+route.post('/vote', [
+    body('id').notEmpty().isNumeric().withMessage('Id is required and could be numeric'),
+    body('vote').isNumeric().withMessage('Vote is required and could be numeric')
+], async (req: AuthenticationRequest, res: Response) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    try{
+        if(req.user && req.user.id){
+            const {id, name} = req.body;
+    
+            const task = await service.getById(id);
+            if(!task) return res.status(404).json({error: 404, message: 'Task not found'});
+
+            const room = await roomService.getByTaskId(id);
+            if(!room) return res.status(404).json({ error: 404, message: 'Room not found' });
+            else if(room.user?.id !== req.user?.id) return res.status(401).json({ error: 401, message: 'You cannot modify tasks in this room' });
+
+            const result = await service.changeName(id, name);
+            return res.json(result);
+        }
+    } catch(error){
+        res.status(500).json({code: 500, message: 'Internal Server Error'});
+    }
+});
+
 route.put('/change-name', [
     body('id').notEmpty().isNumeric().withMessage('Id is required and could be numeric'),
     body('name').isLength({min: 3, max: 50}).withMessage('Name minimum size is 3 and maximum 50')
