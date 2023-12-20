@@ -1,8 +1,11 @@
 import { QueryResult, QueryResultRow } from "pg";
 import { SprintDTO } from "../models/dtos/SprintDTO";
 import pool from "../config/db";
+import { TaskService } from "./TaskService";
 
 export class SprintService{
+
+    taskService = new TaskService();
 
     public async getById(id: number): Promise<SprintDTO | void>{
         return this.getOne(`SELECT * FROM sprints WHERE id = ${id}`);
@@ -70,19 +73,19 @@ export class SprintService{
         });
     }
 
-    private buildSprints(result: QueryResult<QueryResultRow>): Array<SprintDTO>{
-        const sprints: Array<SprintDTO> = result.rows.map(row => {
-            return this.buildSprint(row);
-        });
-
-        return sprints;
+    private async buildSprints(result: QueryResult<QueryResultRow>): Promise<Array<SprintDTO>>{
+        return Promise.all(result.rows.map(async row => {
+            return await this.buildSprint(row);
+        }));
     }
 
-    private buildSprint(sprint: QueryResultRow): SprintDTO{
+    private async buildSprint(sprint: QueryResultRow): Promise<SprintDTO>{
+        const tasks = await this.taskService.getBySprintId(sprint?.id);
         return new SprintDTO(
             sprint?.id,
             sprint?.name,
             sprint?.created_at,
-            sprint?.conclusion_date);
+            sprint?.conclusion_date,
+            tasks);
     }
 }
