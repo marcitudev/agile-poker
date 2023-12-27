@@ -7,12 +7,14 @@ import { SprintService } from '../services/SprintService';
 import { TaskService } from '../services/TaskService';
 import { TaskStatus } from '../models/enums/TaskStatus';
 import { TaskStatusHelper } from '../helpers/TaskStatusHelper';
+import { VoteService } from '../services/VoteService';
 
 const route = express.Router();
 
 const roomService = new RoomService();
 const sprintService = new SprintService();
 const service = new TaskService();
+const voteService = new VoteService();
 
 route.post('/', [
     body('sprintId').notEmpty().isNumeric().withMessage('Sprint id is required and could be numeric'),
@@ -40,23 +42,29 @@ route.post('/', [
 
 route.post('/vote', [
     body('id').notEmpty().isNumeric().withMessage('Id is required and could be numeric'),
-    body('vote').isNumeric().withMessage('Vote is required and could be numeric')
+    body('punctuation').isNumeric().withMessage('Punctuation is required and could be numeric')
 ], async (req: AuthenticationRequest, res: Response) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     try{
         if(req.user && req.user.id){
-            const {id, name} = req.body;
+            const {id, punctuation} = req.body;
     
             const task = await service.getById(id);
-            if(!task) return res.status(404).json({error: 404, message: 'Task not found'});
+            if(!task) return res.status(404).json({ error: 404, message: 'Task not found' });
+            else if(TaskStatusHelper.getOrdinal(task.status) !== TaskStatus['IN_PROGRESS']) return res.status(400).json({error: 400, message: 'This task is not yet available for votes'});
 
             const room = await roomService.getByTaskId(id);
             if(!room) return res.status(404).json({ error: 404, message: 'Room not found' });
-            else if(room.user?.id !== req.user?.id) return res.status(401).json({ error: 401, message: 'You cannot modify tasks in this room' });
 
-            const result = await service.changeName(id, name);
+            const canVote = await voteService.canVote(room.id, req.user.id);
+            if(!canVote) return res.status(401).json({ error: 401, message: 'You cannot vote in this room' });
+
+            const voteIsValid = await voteService.isValidVote(room, punctuation);
+            if(!voteIsValid) return res.status(400).json({ error: 400, message: 'Vote is invalid' });
+
+            const result = await voteService.vote(req.user.id, id, punctuation);
             return res.json(result);
         }
     } catch(error){

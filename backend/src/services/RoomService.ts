@@ -12,39 +12,39 @@ export class RoomService{
     userService = new UserService();
     sprintService = new SprintService();
 
-    public getAllRooms(): Promise<Array<RoomDTO>>{
+    public async getAllRooms(): Promise<Array<RoomDTO>>{
         return this.get('SELECT * FROM rooms');
     }
 
-    public getByCode(code: string): Promise<RoomDTO | void>{
+    public async getByCode(code: string): Promise<RoomDTO | void>{
         return this.getOne(`SELECT * FROM rooms WHERE UPPER(RTRIM(LTRIM(code))) = UPPER(RTRIM(LTRIM('${code}')))`);
     }
 
-    public getById(id: number): Promise<RoomDTO | void>{
+    public async getById(id: number): Promise<RoomDTO | void>{
         return this.getOne(`SELECT * FROM rooms WHERE id = ${id}`);
     }
 
-    public getByUserId(userId: number): Promise<Array<RoomDTO>> {
+    public async getByUserId(userId: number): Promise<Array<RoomDTO>> {
         return this.get(`SELECT DISTINCT(r.*) FROM rooms r LEFT JOIN users_rooms ur ON ur.room_id = r.id WHERE r.user_id = ${userId} OR ur.user_id = ${userId}`);
     }
 
-    public getByNameAndUserId(name: string, userId: number): Promise<RoomDTO | void> {
+    public async getByNameAndUserId(name: string, userId: number): Promise<RoomDTO | void> {
         return this.getOne(`SELECT * FROM rooms WHERE LOWER(RTRIM(LTRIM(name))) = LOWER(RTRIM(LTRIM('${name}'))) AND user_id = ${userId}`);
     }
 
-    public getByIdAndPassword(roomId: number, password?: string): Promise<RoomDTO | void>{
+    public async getByIdAndPassword(roomId: number, password?: string): Promise<RoomDTO | void>{
         return this.getOne(`SELECT * FROM rooms WHERE id = ${roomId} AND (pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = ${password ? "'" + password + "'" : 'NULL'} OR password IS NULL)`);
     }
 
-    public getBySprintId(sprintId: number): Promise<RoomDTO | void>{
+    public async getBySprintId(sprintId: number): Promise<RoomDTO | void>{
         return this.getOne(`SELECT * FROM rooms r WHERE r.id = (SELECT room_id FROM sprints s WHERE s.id = ${sprintId})`);
     }
 
-    public getByTaskId(taskId: number): Promise<RoomDTO | void>{
+    public async getByTaskId(taskId: number): Promise<RoomDTO | void>{
         return this.getOne(`SELECT r.* FROM rooms r JOIN sprints s ON s.room_id = r.id JOIN tasks t ON t.sprint_id = s.id WHERE t.id = ${taskId}`);
     }
 
-    public create(userId: number, room: Room): Promise<RoomDTO>{
+    public async create(userId: number, room: Room): Promise<RoomDTO>{
         room.code = this.generateRoomCode();
         // eslint-disable-next-line no-async-promise-executor
         return new Promise<RoomDTO>(async (resolve, reject) => {
@@ -81,7 +81,7 @@ export class RoomService{
         });
     }
 
-    public userCanEnterTheRoom(userId: number, roomId: number): Promise<boolean>{
+    public async userCanEnterTheRoom(userId: number, roomId: number): Promise<boolean>{
         return new Promise<boolean>((resolve, reject) => {
             const query = `SELECT COUNT(*) FROM rooms r LEFT JOIN users_rooms ur ON ur.room_id = r.id WHERE r.id = ${roomId} AND (r.user_id = ${userId} OR ur.user_id = ${userId})`;
             pool.query(query, (error, response) => {
@@ -94,7 +94,7 @@ export class RoomService{
         });
     }
 
-    public enterTheRoom(userId: number, roomId: number): Promise<void>{
+    public async enterTheRoom(userId: number, roomId: number): Promise<void>{
         return new Promise<void>((resolve, reject) => {
             const query = `INSERT INTO users_rooms(user_id, room_id) VALUES(${userId}, ${roomId})`;
             pool.query(query, (error, response) => {
@@ -104,7 +104,7 @@ export class RoomService{
         });
     }
 
-    public delete(roomId: number, password?: string): Promise<void> {
+    public async delete(roomId: number, password?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             const query = `DELETE FROM rooms WHERE id = ${roomId} AND (pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = ${password ? "'" + password + "'" : 'NULL'} OR password IS NULL)`;
             pool.query(query, (error, response) => {
@@ -114,38 +114,38 @@ export class RoomService{
         });
     }
 
-    private async getOne(query: string): Promise<RoomDTO | void>{
+    private async getOne(query: string, withSprints = true): Promise<RoomDTO | void>{
         return new Promise<RoomDTO | void>((resolve, reject) => {
             pool.query(query, (error, response) => {
                 if(error) reject(); 
-                else if(response.rows.length > 0) resolve(this.buildRoom(response.rows[0]));
+                else if(response.rows.length > 0) resolve(this.buildRoom(response.rows[0], withSprints));
                 resolve();
             });
         });
     }
 
-    private async get(query: string): Promise<Array<RoomDTO>>{
+    private async get(query: string, withSprints = true): Promise<Array<RoomDTO>>{
         return new Promise<Array<RoomDTO>>((resolve, reject) => {
             pool.query(query, (error, response) => {
                 if(error) reject();
-                resolve(this.buildRooms(response));
+                resolve(this.buildRooms(response, withSprints));
             });
         });
     }
 
-    private async buildRooms(result: QueryResult<QueryResultRow>): Promise<Array<RoomDTO>>{
+    private async buildRooms(result: QueryResult<QueryResultRow>, withSprints = true): Promise<Array<RoomDTO>>{
         return Promise.all(result.rows.map(async row => {
-            return await this.buildRoom(row);
+            return await this.buildRoom(row, withSprints);
         }));
     }
 
-    private async buildRoom(room: QueryResultRow): Promise<RoomDTO>{
+    private async buildRoom(room: QueryResultRow, withSprints = true): Promise<RoomDTO>{
         const user = await this.userService.getById(room?.user_id);
-        const sprints = await this.sprintService.getByRoomId(room?.id);
+        let sprints;
+        if(withSprints) sprints = await this.sprintService.getByRoomId(room?.id);
         let cardValues;
-        if(room?.card_value_type === CardValueType['CUSTOM']){
-            cardValues = await this.getCustomCardValuesByRoomId(room?.id);
-        }
+        if(room?.card_value_type === CardValueType['CUSTOM']) cardValues = await this.getCustomCardValuesByRoomId(room?.id);
+        
         return new RoomDTO(
             room?.id,
             room?.name,
@@ -157,16 +157,6 @@ export class RoomService{
             sprints,
             cardValues
          );
-    }
-
-    private async createCustomCardValues(id: number, values: Array<number>): Promise<Array<number>>{
-        return new Promise<Array<number>>((resolve, reject) => {
-            const query = `INSERT INTO custom_card_values(values, room_id) VALUES(ARRAY[${values}], ${id}) RETURNING values`;
-            pool.query(query, (error, response) => {
-                if(error) reject();
-                resolve(response.rows[0].values);
-            });
-        });
     }
     
     private async getCustomCardValuesByRoomId(id: number): Promise<Array<number>>{

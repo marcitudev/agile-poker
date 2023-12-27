@@ -9,19 +9,19 @@ export class UserService{
         return this.get('SELECT * FROM users');
     }
 
-    public async getById(id: number): Promise<UserDTO | void>{
+    public async getById(id: number): Promise<UserDTO | undefined>{
         return this.getOne(`SELECT * FROM users WHERE id = ${id}`);
     }
 
-    public async getByIdAndPassword(id: number, password: string): Promise<UserDTO | void>{
+    public async getByIdAndPassword(id: number, password: string): Promise<UserDTO | undefined>{
         return this.getOne(`SELECT * FROM users WHERE id = ${id} AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`);
     }
 
-    public async getByUsername(username: string): Promise<UserDTO | void>{
+    public async getByUsername(username: string): Promise<UserDTO | undefined>{
         return this.getOne(`SELECT * FROM users WHERE LOWER(username) = LOWER('${username}')`);
     }
 
-    public async getByUsernameAndPassword(username: string, password: string): Promise<UserDTO | void>{
+    public async getByUsernameAndPassword(username: string, password: string): Promise<UserDTO | undefined>{
         return this.getOne(`SELECT * FROM users WHERE LOWER(username) = LOWER('${username}') AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`);
     }
 
@@ -49,22 +49,22 @@ export class UserService{
         });
     }
 
-    public async delete(id: number, password: string): Promise<void>{
-        return new Promise<void>((resolve, reject) => {
+    public async delete(id: number, password: string): Promise<undefined>{
+        return new Promise<undefined>((resolve, reject) => {
             const query = `DELETE FROM users WHERE id = ${id} AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`;
             pool.query(query, (error, response) => {
                 if(error) reject();
-                if(response) resolve();
+                if(response) resolve(undefined);
             });
         });
     }
 
-    private async getOne(query: string): Promise<UserDTO | void>{
-        return new Promise<UserDTO | void>((resolve, reject) => {
+    private async getOne(query: string): Promise<UserDTO | undefined>{
+        return new Promise<UserDTO | undefined>((resolve, reject) => {
             pool.query(query, (error, response) => {
                 if(error) reject(); 
                 else if(response.rows.length > 0) resolve(this.buildUser(response.rows[0]));
-                resolve();
+                resolve(undefined);
             });
         });
     }
