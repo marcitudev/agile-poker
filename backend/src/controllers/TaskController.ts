@@ -111,12 +111,23 @@ route.put('/change-status', [
     
             const task = await service.getById(id);
             if(!task) return res.status(404).json({error: 404, message: 'Task not found'});
+            else if(TaskStatusHelper.getOrdinal(task.status) == TaskStatus['DONE']) return res.status(400).json({ error: 400, message: 'The task has already been completed, you can no longer change the status' });
+            else if(Math.abs(TaskStatusHelper.getOrdinal(task.status) - TaskStatusHelper.getOrdinal(status)) > 1) return res.status(400).json({ error: 400, message: 'The status must follow a certain order' });
 
             const room = await roomService.getByTaskId(id);
             if(!room) return res.status(404).json({ error: 404, message: 'Room not found' });
             else if(room.user?.id !== req.user?.id) return res.status(401).json({ error: 401, message: 'You cannot modify tasks in this room' });
 
             const taskStatus = TaskStatusHelper.getOrdinal(status);
+
+            const canChangeStatus = await service.canChangeStatus(id, room.id);
+            if(!canChangeStatus) return res.status(400).json({ error: 400, message: 'Cannot open this task at the moment, some other task is open' });
+
+            if(taskStatus == TaskStatus['SHOWING_RESULT']) {
+                const everyoneVoted = await voteService.everyoneVoted(task.id, room.id, room.hostVotes);
+                if(!everyoneVoted) return res.status(400).json({code: 400, message: 'Not everyone voted'});
+            } 
+
             const result = await service.changeStatus(id, taskStatus);
             return res.json(result);
         }

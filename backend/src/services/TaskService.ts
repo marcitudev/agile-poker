@@ -43,10 +43,22 @@ export class TaskService{
         });
     }
 
+    public async canChangeStatus(id: number, roomId: number): Promise<boolean>{
+        return new Promise<boolean>((resolve, reject) => {
+            const query = `SELECT * FROM tasks t INNER JOIN sprints s ON s.id = t.sprint_id INNER JOIN rooms r ON r.id = s.room_id WHERE r.id = ${roomId} AND t.id <> ${id} AND t.status NOT IN(0,4)`;
+            pool.query(query, (error, response) => {
+                if(error) reject();
+                resolve(response.rows.length > 0 ? false : true);
+            });
+        });
+    }
 
     public async changeStatus(id: number, status: TaskStatus): Promise<TaskDTO>{
         return new Promise<TaskDTO>((resolve, reject) => {
-            const query = `UPDATE tasks SET status = ${status} WHERE id = ${id} RETURNING *`;
+            let query = `UPDATE tasks SET status = ${status} `;
+            if(status == TaskStatus['DONE']) query += `, punctuation = (SELECT ROUND(AVG(punctuation)::numeric, 2) FROM user_votes WHERE task_id = ${id}) `;
+            query += `WHERE id = ${id} RETURNING *`;
+            
             pool.query(query, (error, response) => {
                 if(error) reject();
                 resolve(this.buildTask(response.rows[0]));
