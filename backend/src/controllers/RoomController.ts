@@ -4,6 +4,8 @@ import { RoomService } from '../services/RoomService';
 import { AuthenticationRequest } from '../models/interfaces/AuthenticationRequest';
 import { validationResult, body } from 'express-validator';
 import { UserService } from '../services/UserService';
+import { CardValueType } from '../models/enums/CardValueType';
+import { CardValueTypeHelper } from '../helpers/CardValueTypeHelper';
 
 const route = express.Router();
 
@@ -19,8 +21,14 @@ route.post('/', [
     body('id').isEmpty().withMessage('Cannot pass the ID into the body'),
     body('name').isLength({min: 3, max: 50}).withMessage('Name minimum size is 3 and maximum 30'),
     body('hostVotes').isBoolean().withMessage('Host votes is required'),
-    body('cardValueType').isNumeric().withMessage('Card value type is required and should be numeric'),
+    body('cardValueType').isIn(Object.values(CardValueType)).withMessage('Valid card value type is required'),
     body('password').optional().isLength({min: 3, max: 20}).withMessage('Password minimum size is 3 and maximum 30'),
+    body('cardValues').custom((value, {req}) => {
+        const cardValueType = CardValueTypeHelper.getOrdinal(req.body['cardValueType']);
+        if(cardValueType !== CardValueType['CUSTOM']) return true;
+        else if(cardValueType === CardValueType['CUSTOM'] && Array.isArray(value) && value.every(element => typeof element === 'number' && Number.isInteger(element)) && value.length >= 5) return true;
+        throw new Error('When the room card values are CUSTOM, the custom card values are mandatory and must be an array with 5 or more integer numeric elements.');
+    })
 ], async (req: AuthenticationRequest, res: Response) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
