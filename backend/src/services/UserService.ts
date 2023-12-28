@@ -18,16 +18,16 @@ export class UserService{
     }
 
     public async getByUsername(username: string): Promise<UserDTO | undefined>{
-        return this.getOne(`SELECT * FROM users WHERE LOWER(username) = LOWER('${username}')`);
+        return this.getOne(`SELECT * FROM users WHERE LTRIM(RTRIM(LOWER(username))) = LTRIM(RTRIM(LOWER('${username}')))`);
     }
 
     public async getByUsernameAndPassword(username: string, password: string): Promise<UserDTO | undefined>{
-        return this.getOne(`SELECT * FROM users WHERE LOWER(username) = LOWER('${username}') AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`);
+        return this.getOne(`SELECT * FROM users WHERE LTRIM(RTRIM(LOWER(username))) = LTRIM(RTRIM(LOWER('${username}'))) AND pgp_sym_decrypt(password, '${process.env.CRIPTO_PASSWORD}') = '${password}'`);
     }
 
     public async create(user: User): Promise<UserDTO>{
         return new Promise<UserDTO>((resolve, reject) => {
-            pool.query(`INSERT INTO users(username, first_name, last_name, password) VALUES(LOWER('${user.username}'), '${user.firstName}', '${user.lastName}', pgp_sym_encrypt('${user.password}', '${process.env.CRIPTO_PASSWORD}')) RETURNING *`, (error, response) => {
+            pool.query(`INSERT INTO users(username, first_name, last_name, password) VALUES(LTRIM(RTRIM(LOWER('${user.username}'))), LTRIM(RTRIM('${user.firstName}')), LTRIM(RTRIM('${user.lastName}')), pgp_sym_encrypt('${user.password}', '${process.env.CRIPTO_PASSWORD}')) RETURNING *`, (error, response) => {
                 if(error) reject();
                 if(response) resolve(this.buildUser(response.rows[0]));
             });
