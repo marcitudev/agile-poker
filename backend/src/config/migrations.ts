@@ -10,7 +10,7 @@ export function runMigrations(): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
         try {
             await createMigrationsSchemaHistoryTable();
-
+            
             const files = fs.readdirSync(migrationsPath);
     
             for (const [index, file] of files.entries()) {
@@ -52,10 +52,10 @@ async function verifyFile(file: string){
 }
 
 async function createMigrationsSchemaHistoryTable(): Promise<void>{
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
         const query = 'CREATE TABLE IF NOT EXISTS migrations_schema_history(id SERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL UNIQUE, version INT NOT NULL)'
         pool.query(query, (err, response) => {
-            if(err) throw new Error('migration_schema_history not created');
+            if(err) reject(`migration_schema_history not created: ${err}`);
             if(response) resolve();
         });
     });

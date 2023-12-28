@@ -44,13 +44,17 @@ export const verifyToken = (req: AuthenticationRequest, res: Response, next: Nex
 
     const token: string = req.headers.authorization ? req.headers.authorization : '';
 
+    
     if(token === '') return res.status(403).json({error: 403, message: 'Token not found'});
-
-    jwt.verify(token, <string> process.env.AUTH_SECRET_KEY, (err, decoded) => {
+    
+    jwt.verify(token, <string> process.env.AUTH_SECRET_KEY, async (err, decoded) => {
         if(err) return res.status(401).json({error: 401, message: 'Unauthorized'});
         
         if(decoded){
             req.user = <AuthUser> decoded;
+            
+            const user = await userService.getById(req.user.id);
+            if(!user) return res.status(404).json({error: 404, message: 'User not found'});
         }
         next();
     });
