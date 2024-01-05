@@ -3,7 +3,11 @@
     "start": "webpack serve --config webpack.config.js",
     "build": "webpack --config webpack.config.js"
   },
+  "dependencies": {
+    "@vaadin/router": "^1.7.5"
+  },
   "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
     "html-webpack-plugin": "^5.6.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
