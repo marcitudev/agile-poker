@@ -1,8 +1,6 @@
 import htmlContent from './register-component.html';
-import './register-component.css';
-import './../../styles/main.css';
-import './../../styles/fonts.css';
-import './../../styles/form.css';
+import './register-component.scss';
+import './../../styles/main.scss';
 
 class Register extends HTMLElement{
     constructor(){
