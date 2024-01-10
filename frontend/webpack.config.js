@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -13,28 +12,26 @@ module.exports = {
     rules: [
       {
         test: /\.html$/,
-        exclude: [
-          /node_modules/,
-          /index.html/
-        ],
-        use: ['html-loader'],
+        exclude: [/node_modules/,/index.html/],
+        use: ['html-loader']
       },
-    ]
+      {
+        test: /\.css$/,
+        exclude: [/node_modules/],
+        use: ['style-loader','css-loader']
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
+      filename: 'index.html',
     }),
-    new CleanWebpackPlugin()
   ],
   devServer: {
-    static: {
-      directory: path.join(__dirname, "dist"),
-      watch: true
-    },
     historyApiFallback: true,
     port: 4200,
     open: true,
-    hot: true
+    hot: true,
   }
 };
