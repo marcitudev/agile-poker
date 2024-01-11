@@ -12,7 +12,7 @@ module.exports = {
     rules: [
       {
         test: /\.html$/,
-        exclude: [/node_modules/,/index.html/],
+        exclude: [/node_modules/],
         use: ['html-loader']
       },
       {
@@ -29,9 +29,10 @@ module.exports = {
     }),
   ],
   devServer: {
+    watchFiles: [path.resolve(__dirname, "src/**/*")],
     historyApiFallback: true,
     port: 4200,
     open: true,
-    hot: true,
+    hot: true
   }
 };
