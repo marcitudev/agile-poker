@@ -1,12 +1,36 @@
+@import 'variables.scss';
+
 .form-control{
-    border: #3A2D32 solid 2px;
+    border: $main-black solid 2px;
     border-radius: 8px;
-    height: 28px;
-    padding: 10px;
+    height: 58px;
+    padding: 20px;
     margin-block: 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-control:invalid{
+    border-color: $something-wrong;
 }
 
 .form-control::placeholder{
-    color: #808080;
+    color: $light-gray;
+}
+
+small{
+    display: none;
+    margin-left: 5%;
     font-size: .8rem;
+    width: 100%;
+    animation: show ease .3s forwards;
+}
+
+@keyframes show {
+    0% {
+        transform: translateX(-20px);
+    } 
+    100% {
+        transform: translateX(0px);
+    } 
 }
