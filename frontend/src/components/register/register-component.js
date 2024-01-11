@@ -2,10 +2,12 @@ import htmlContent from './register-component.html';
 import './register-component.scss';
 import './../../styles/main.scss';
 import User from './../../models/user'
+import UserService from '../../services/user-service';
 
 class Register extends HTMLElement{
     constructor(){
         super();
+        this.service = new UserService();
     }
     
     connectedCallback(){
@@ -68,8 +70,13 @@ class Register extends HTMLElement{
                 user[element.name] = element.value;
             });
             
+            this.service.create(this.buildUser(user)).then(() => {
+                window.location.href('/login');
+            });
         });
     }
+
+
 
     invalidSubmitAnimation(){
         const submitEl = document.querySelector('#submit-btn');
