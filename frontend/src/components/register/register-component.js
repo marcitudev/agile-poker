@@ -61,36 +61,49 @@ class Register extends HTMLElement{
         const inputsEl = formEl.querySelectorAll('input');
         formEl.addEventListener('submit', (event) => {
             event.preventDefault();
-            if(!this.formValidation(inputsEl)) {
-                this.invalidSubmitAnimation();
+
+            const invalidInputs = this.findInvalidInputs(inputsEl);
+            if(invalidInputs.length > 0) {
+                this.invalidSubmitAnimation(invalidInputs);
                 return;
             };
+
             const user = {};
             [...inputsEl].forEach(element => {
                 user[element.name] = element.value;
             });
             
             this.service.create(this.buildUser(user)).then(() => {
-                window.location.href('/login');
-            });
+                window.location.href = '/login';
+            }).catch(e => console.log(e));
         });
     }
 
+    invalidSubmitAnimation(invalidInputs){
+        const emphasisInvalidInput = (add) => {
+            [...invalidInputs].forEach(input => {
+                if(add) input.classList.add('red-border');
+                else input.classList.remove('red-border');
+            });
+        }
 
-
-    invalidSubmitAnimation(){
         const submitEl = document.querySelector('#submit-btn');
         submitEl.classList.add('invalid-click');
+        emphasisInvalidInput(true);
         setTimeout(() => {
             submitEl.classList.remove('invalid-click');
-        }, 600);
+            emphasisInvalidInput(false);
+        }, 1000);
     }
 
-    formValidation(inputsEl){
-        return [...inputsEl].every(element => {
+    findInvalidInputs(inputsEl){
+        const invalidElements = [];
+        [...inputsEl].forEach(element => {
             const validation = this.elementValidation(element);
-            return validation.minLength && validation.maxLength && validation.pattern;
+            if(!validation.minLength || !validation.maxLength || !validation.pattern) invalidElements.push(element);
         });
+
+        return invalidElements;
     }
 
     elementValidation(element){

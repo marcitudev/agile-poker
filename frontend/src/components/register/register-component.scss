@@ -1,3 +1,5 @@
+@import './../../styles/variables.scss';
+
 h1, form{
     width: 100%;
 }
@@ -14,4 +16,8 @@ h1, form{
 
 small .validation{
     text-align: center;
+}
+
+.red-border{
+    border-color: $something-wrong !important;
 }
