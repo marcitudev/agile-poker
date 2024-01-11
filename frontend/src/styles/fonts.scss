@@ -1,22 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@800&display=swap');
+@import 'variables.scss';
 
 *{
     font-family: 'Manrope';
     font-size: 1rem;
     font-weight: normal;
+    color: $main-black;
 }
 
 .title-1{
     font-family: 'Manrope';
     font-size: 3rem;
     font-weight: 800;
-    color: #3A2D32;
 }
 
 .title-2{
     font-family: 'Manrope';
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: #3A2D32;
+    margin-block: 10px;
 }
