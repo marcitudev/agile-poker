@@ -1,9 +1,30 @@
-<div class="container-register">
+<div class="container">
     <h1 class="title-2">Join us now</h1>
-    <form action="submit">
-        <input type="text" id="username" class="form-control" placeholder="Enter your best username">
-        <input type="text" id="firstName" class="form-control" placeholder="First name">
-        <input type="text" id="lastName" class="form-control" placeholder="Last name">
-        <input type="password" id="username" class="form-control" placeholder="Password">
+    <form id="register-form" novalidate>
+        <div class="input-element">
+            <input type="text" id="username" name="username" class="form-control" minlength="3" pattern="^[a-zA-Z0-9_\-\.]+$" maxlength="30" placeholder="Your best username">
+            <small class="min-length">Deve ter no mínimo 3 caracteres</small>
+            <small class="max-length">Deve ter no máximo 30 caracteres</small>
+            <small class="pattern">Não deve ter caracteres especiais nem espaços</small>
+        </div>
+        <div class="input-element">
+            <input type="text" id="firstName" name="firstName" class="form-control" minlength="3" maxlength="30" pattern="^\p{L}[\p{L} ]*\p{L}$" placeholder="First name">
+            <small class="min-length">Deve ter no mínimo 3 caracteres</small>
+            <small class="max-length">Deve ter no máximo 30 caracteres</small>
+            <small class="pattern">Não deve conter caracteres especiais, números, nem espaços nas extremidades</small>
+        </div>
+        <div class="input-element">
+            <input type="text" id="lastName" name="lastName" class="form-control" minlength="3" maxlength="30" pattern="^\p{L}[\p{L} ]*\p{L}$" placeholder="Last name">
+            <small class="min-length">Deve ter no mínimo 3 caracteres</small>
+            <small class="max-length">Deve ter no máximo 30 caracteres</small>
+            <small class="pattern">Não deve conter caracteres especiais, números, nem espaços nas extremidades</small>
+        </div>
+        <div class="input-element">
+            <input type="password" id="password" name="password" class="form-control" minlength="6" maxlength="20" pattern="^[^\s]+$" placeholder="Password">
+            <small class="min-length">Deve ter no mínimo 6 caracteres</small>
+            <small class="max-length">Deve ter no máximo 20 caracteres</small>
+            <small class="pattern">Não deve conter espaços</small>
+        </div>
+        <button type="submit" id="submit-btn" class="btn-primary">Create account</button>
     </form>
 </div>
