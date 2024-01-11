@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as cors from 'cors';
 import { Router, Request, Response } from 'express';
 import usersController from './controllers/UserController';
 import authentication from './controllers/Authentication';
@@ -8,9 +9,16 @@ import { runMigrations } from './config/migrations';
 import sprintsController from './controllers/SprintController';
 import tasksController from './controllers/TaskController';
 
+const corsOptions = {
+    origin: 'http://localhost:4200',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true
+}
+
 const app = express();
 const route = Router();
 
+app.use(cors(corsOptions));
 app.use(express.json());
 
 route.get('/', (req: Request, res: Response) => {
