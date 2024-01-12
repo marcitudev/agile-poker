@@ -36,10 +36,13 @@ export default class BaseService{
             }
 
             fetch(url, request).then(response => {
-                response.json().then(json => {
-                    resolve(json);
-                }).catch(e => reject(e))
-            }).catch(e => reject(e))
+                response.json().then(data => {
+                    if(!response.ok){
+                        reject(data);
+                    }
+                    resolve(data);
+                })
+            }).catch(e => reject(e));
         });
     }
 }
