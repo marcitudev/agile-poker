@@ -80,19 +80,21 @@ class Register extends HTMLElement{
     }
 
     invalidSubmitAnimation(invalidInputs){
-        const emphasisInvalidInput = (add) => {
+        const emphasisInvalidInput = () => {
             [...invalidInputs].forEach(input => {
-                if(add) input.classList.add('red-border');
+                if(!input.classList.contains('red-border')) input.classList.add('red-border');
                 else input.classList.remove('red-border');
             });
         }
 
         const submitEl = document.querySelector('#submit-btn');
         submitEl.classList.add('invalid-click');
-        emphasisInvalidInput(true);
+        submitEl.disabled = true;
+        emphasisInvalidInput();
         setTimeout(() => {
             submitEl.classList.remove('invalid-click');
-            emphasisInvalidInput(false);
+            submitEl.disabled = false;
+            emphasisInvalidInput();
         }, 1000);
     }
 
