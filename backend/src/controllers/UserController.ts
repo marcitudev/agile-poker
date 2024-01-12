@@ -30,7 +30,7 @@ route.get('/:id', [
 });
 
 route.get('/username/:username', [
-    check('username').isLength({min: 3}).withMessage('Username minimum size is 3')
+    check('username').isLength({min: 3, max: 30}).withMessage('Username minimum size is 3 and maximum 30')
 ], async (req: Request, res: Response) => {
     const errors = validationResult(req)
     if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -39,6 +39,21 @@ route.get('/username/:username', [
         const result = await userService.getByUsername(req.params.username);
         if(!result) res.status(404).json({code: 404, message: 'Not found'});
         res.json(result);
+    } catch(error){
+        res.status(500).json({code: 500, message: 'Internal Server Error'});
+    }
+});
+
+route.get('/username-avaliable/:username', [
+    check('username').isLength({min: 3, max: 30}).withMessage('Username minimum size is 3 and maximum 30')
+], async (req: Request, res: Response) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    try{
+        const result = await userService.getByUsername(req.params.username);
+        if(!result) return res.json({avaliable: true});
+        res.json({avaliable: false});
     } catch(error){
         res.status(500).json({code: 500, message: 'Internal Server Error'});
     }
@@ -55,7 +70,7 @@ route.post('/', [
 
     try{
         const existsByUsername = await userService.getByUsername(req.body['username']);
-        if(existsByUsername) return res.status(400).json({code: 400, message: 'Username already exists'});
+        if(existsByUsername) return res.status(400).json({code: 'ALR_EXT001', message: 'Username already exists'});
 
         const result = await userService.create(req.body);
         res.json(result);
