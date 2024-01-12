@@ -39,7 +39,8 @@ class Register extends HTMLElement{
                 });
             }
 
-            input.addEventListener('keyup', () => {
+            input.addEventListener('keyup', (event) => {
+                if(input.name === 'username' && event.key !== 'Enter') this.hideUsernameAlreadyExistsError();
                 elementValidator();
             });
 
@@ -51,7 +52,9 @@ class Register extends HTMLElement{
                 const parentElement = input.parentNode;
                 const sisterElements = parentElement.querySelectorAll('small');
 
-                [...sisterElements].forEach(element => element.style.display = 'none');
+                [...sisterElements].forEach(element => {
+                    if(element.id !== 'username-already-exists') element.style.display = 'none';
+                });
             });
         });
     }
@@ -61,6 +64,10 @@ class Register extends HTMLElement{
         const inputsEl = formEl.querySelectorAll('input');
         formEl.addEventListener('submit', (event) => {
             event.preventDefault();
+
+            const submitEl = document.querySelector('#submit-btn');
+            submitEl.disabled = true;
+            submitEl.classList.add('loading');
 
             const invalidInputs = this.findInvalidInputs(inputsEl);
             if(invalidInputs.length > 0) {
@@ -74,20 +81,49 @@ class Register extends HTMLElement{
             });
             
             this.service.create(this.buildUser(user)).then(() => {
-                window.location.href = '/login';
-            }).catch(e => console.log(e));
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000)
+            }).catch(e => this.handlerErrors(e));
         });
+    }
+
+    handlerErrors(error){
+        if(error.code === 'ALR_EXT001') this.showUsernameAlreadyExistsError();
+    }
+
+    showUsernameAlreadyExistsError(){
+        const alreadyExistsElement = document.querySelector('#username-already-exists');
+        const usernameInput = document.querySelector('#username');
+        this.invalidSubmitAnimation([usernameInput]);
+
+        if(alreadyExistsElement) return;
+        
+        const parentNode = usernameInput.parentElement;
+
+        const alreadyExistsErrorEl = document.createElement('small');
+        alreadyExistsErrorEl.id = 'username-already-exists';
+        alreadyExistsErrorEl.textContent = 'Username already exists';
+        alreadyExistsErrorEl.style.display = 'block';
+        parentNode.appendChild(alreadyExistsErrorEl);
+    }
+
+    hideUsernameAlreadyExistsError(){
+        const alreadyExistsElement = document.querySelector('#username-already-exists');
+        if(!alreadyExistsElement) return;
+
+        alreadyExistsElement.parentElement.removeChild(alreadyExistsElement);
     }
 
     invalidSubmitAnimation(invalidInputs){
         const emphasisInvalidInput = () => {
             [...invalidInputs].forEach(input => {
-                if(!input.classList.contains('red-border')) input.classList.add('red-border');
-                else input.classList.remove('red-border');
+                !input.classList.contains('red-border') ? input.classList.add('red-border') : input.classList.remove('red-border');
             });
         }
 
         const submitEl = document.querySelector('#submit-btn');
+        submitEl.classList.remove('loading');
         submitEl.classList.add('invalid-click');
         submitEl.disabled = true;
         emphasisInvalidInput();

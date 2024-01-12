@@ -47,3 +47,18 @@ button{
         transform: translateX(-5px);
     }
 }
+
+.loading{
+    background: linear-gradient(90deg, $main 0%, $main 50%, $main-dark 50%, $main-dark 100%);
+    background-size: 200% 200%;
+    animation: background-loading 2s ease-in-out infinite;
+}
+
+@keyframes background-loading {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
