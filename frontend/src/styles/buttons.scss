@@ -1,0 +1,64 @@
+@import 'variables.scss';
+
+button{
+    cursor: pointer;
+}
+
+.btn-primary{
+    border: none;
+    border-radius: 8px;
+    height: 58px;
+    width: 100%;
+    padding: 10px;
+    background-color: $main;
+    margin-block: 10px;
+    font-weight: 700;
+    color: white;
+    transition: background-color .3s ease;
+}
+
+.btn-primary:hover{
+    background-color: $main-dark;
+}
+
+.invalid-click{
+    background-color: $something-wrong;
+    animation: shake .3s;
+}
+
+.invalid-click:hover{
+    background-color: $something-wrong !important;
+}
+
+@keyframes shake {
+    0%{
+        transform: translateX(-5px);
+    }
+    25%{
+        transform: translateX(5px);
+    }
+    50%{
+        transform: translateX(-5px);
+    }
+    75%{
+        transform: translateX(5px);
+    }
+    100%{
+        transform: translateX(-5px);
+    }
+}
+
+.loading{
+    background: linear-gradient(90deg, $main 0%, $main 50%, $main-dark 50%, $main-dark 100%);
+    background-size: 200% 200%;
+    animation: background-loading 2s ease-in-out infinite;
+}
+
+@keyframes background-loading {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}

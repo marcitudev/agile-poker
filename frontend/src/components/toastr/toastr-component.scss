@@ -1,0 +1,48 @@
+@import './../../styles/variables.scss';
+
+.toastr-container{
+    background-color: $light-gray;
+    width: 280px;
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    border-radius: 6px;
+    padding: 15px 20px;
+    box-shadow: 0 0 5px hsl(0, 1%, 79%);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .2s ease-in-out;
+}
+
+.fade-in{
+    opacity: 1;
+}
+
+.fade-out{
+    opacity: 0;
+}
+
+.toastr-title, .toastr-message{
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-size: .9rem;
+}
+
+.toastr-title{
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+
+.success{
+    background-color: $main !important;
+}
+
+.error{
+    background-color: $something-wrong !important;
+}
+
+.warning{
+    background-color: $warning !important;
+}
