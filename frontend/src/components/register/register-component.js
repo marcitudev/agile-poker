@@ -3,11 +3,13 @@ import './register-component.scss';
 import './../../styles/main.scss';
 import User from './../../models/user'
 import UserService from '../../services/user-service';
+import Toastr from '../toastr/toastr-component';
 
 class Register extends HTMLElement{
     constructor(){
         super();
         this.service = new UserService();
+        this.toastrService = new Toastr();
     }
     
     connectedCallback(){
@@ -81,9 +83,10 @@ class Register extends HTMLElement{
             });
             
             this.service.create(this.buildUser(user)).then(() => {
+                this.toastrService.success('You have registered successfully', 'Registration completed');
                 setTimeout(() => {
                     window.location.href = '/login';
-                }, 2000)
+                }, 4000);
             }).catch(e => this.handlerErrors(e));
         });
     }
