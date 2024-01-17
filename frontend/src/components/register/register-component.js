@@ -4,6 +4,7 @@ import './../../styles/main.scss';
 import User from './../../models/user'
 import UserService from '../../services/user-service';
 import Toastr from '../toastr/toastr-component';
+import ERROR_CODES from './../../utils/error-constants';
 
 class Register extends HTMLElement{
     constructor(){
@@ -106,7 +107,7 @@ class Register extends HTMLElement{
 
         const alreadyExistsErrorEl = document.createElement('small');
         alreadyExistsErrorEl.id = 'username-already-exists';
-        alreadyExistsErrorEl.textContent = 'Username already exists';
+        alreadyExistsErrorEl.textContent = ERROR_CODES.ALR_EXT001;
         alreadyExistsErrorEl.style.display = 'block';
         parentNode.appendChild(alreadyExistsErrorEl);
     }
