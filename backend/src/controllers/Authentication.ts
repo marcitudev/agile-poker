@@ -15,7 +15,8 @@ const userService = new UserService();
 
 type KeyValueTuple = [string, string];
 const routesWithoutAuthentication: Array<KeyValueTuple> = [
-    ['POST', '/users']
+    ['POST', '/users'],
+    ['GET', '/users/username-avaliable']
 ];
 
 route.post('/login',[
