@@ -1,13 +1,13 @@
+import htmlContent from './login-component.html';
+import './login-component.scss';
+
 class Login extends HTMLElement{
     constructor(){
         super();
-        this.attachShadow({ mode: 'open' });
     }
-
+    
     connectedCallback(){
-        this.shadowRoot.innerHTML = `
-            My login
-        `;
+        this.innerHTML = htmlContent;
     }
 }
 
