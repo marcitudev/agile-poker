@@ -1,9 +1,11 @@
 import { Router } from '@vaadin/router';
-import './components/login/login';
+import './styles/main.scss';
+import './components/login/login-component';
 import './components/register/register-component';
 
 const routes = [
     { path: '/', redirect: '/login' },
+    { path: '/login', component: 'app-login' },
     { path: '/register', component: 'app-register' }
 ]
 

@@ -1,6 +1,5 @@
 import htmlContent from './register-component.html';
 import './register-component.scss';
-import './../../styles/main.scss';
 import User from './../../models/user'
 import UserService from '../../services/user-service';
 import Toastr from '../toastr/toastr-component';
