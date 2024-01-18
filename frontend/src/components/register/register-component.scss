@@ -1,10 +1,6 @@
 @import './../../styles/variables.scss';
 
-h1, form{
-    width: 100%;
-}
-
-.container{
+.register-container{
     max-width: 450px;
     margin: auto;
     display: flex;
@@ -14,10 +10,10 @@ h1, form{
     height: 98vh;
 }
 
-small .validation{
-    text-align: center;
+.register-container h1, form{
+    width: 100%;
 }
 
-.red-border{
+.register-container .red-border{
     border-color: $something-wrong !important;
 }
