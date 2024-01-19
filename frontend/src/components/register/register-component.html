@@ -2,7 +2,7 @@
     <h1 class="title-2">Join us now</h1>
     <form id="register-form" novalidate>
         <div class="input-element">
-            <input type="text" id="username" name="username" class="form-control" minlength="3" pattern="^[a-zA-Z0-9_\-\.]+$" maxlength="30" placeholder="Your best username">
+            <input type="text" id="username" name="username" class="form-control" minlength="3" maxlength="30" pattern="^[a-zA-Z0-9_\-\.]+$" placeholder="Your best username">
             <small class="min-length">Must have at least 3 characters</small>
             <small class="max-length">Must have a maximum of 30 characters</small>
             <small class="pattern">Must not contain special characters or spaces</small>
@@ -26,5 +26,8 @@
             <small class="pattern">Must not contain spaces</small>
         </div>
         <button type="submit" id="submit-btn" class="btn-primary">Create account</button>
+        <p>
+            I already have an account. <a href="/login" class="login-link">Login</a>.
+        </p>
     </form>
 </div>

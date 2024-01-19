@@ -8,6 +8,7 @@
     align-items: center;
     flex-direction: column;
     height: 98vh;
+    animation: show ease 1s forwards;
 }
 
 .register-container h1, form{
@@ -16,4 +17,19 @@
 
 .register-container .red-border{
     border-color: $something-wrong !important;
+}
+
+.register-container form p{
+    text-align: center;
+    margin-top: 5px;
+    font-size: .9rem;
+}
+
+.register-container .login-link{
+    font-size: .9rem;
+    font-weight: 700;
+
+    &:hover{
+        color: $main;
+    }
 }
