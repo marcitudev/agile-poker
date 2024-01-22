@@ -92,7 +92,19 @@ class Register extends HTMLElement{
     }
 
     handlerErrors(error){
-        if(error.code === 'ALR_EXT001') this.showUsernameAlreadyExistsError();
+        switch(error.code){
+            case 'ALR_EXT001':
+                this.showUsernameAlreadyExistsError();
+                break;
+            default:
+                this.undefinedError();
+        }
+    }
+
+    undefinedError(){
+        const submitEl = document.querySelector('#submit-btn');
+        submitEl.classList.remove('loading');
+        submitEl.disabled = false;
     }
 
     showUsernameAlreadyExistsError(){
