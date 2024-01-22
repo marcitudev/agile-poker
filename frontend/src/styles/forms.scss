@@ -2,6 +2,7 @@
 
 .form-control{
     border: $main-black solid 2px;
+    background-color: transparent;
     border-radius: 8px;
     height: 58px;
     padding: 20px;
@@ -16,6 +17,10 @@
 
 .form-control::placeholder{
     color: $light-gray;
+}
+
+.red-border{
+    border-color: $something-wrong !important;
 }
 
 small{
