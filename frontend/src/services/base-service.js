@@ -1,4 +1,11 @@
+import Toastr from "../components/toastr/toastr-component";
+
 export default class BaseService{
+
+    constructor(){
+        this.toastrService = new Toastr();
+    }
+
     get(url, params = {}){
         return this.request('GET', url, params);
     }
@@ -42,7 +49,10 @@ export default class BaseService{
                     }
                     resolve(data);
                 })
-            }).catch(e => reject(e));
+            }).catch(e => {
+                this.toastrService.error('Wait a moment and try again', 'Unexpected error');
+                reject(e);
+            });
         });
     }
 }

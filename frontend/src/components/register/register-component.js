@@ -1,6 +1,5 @@
 import htmlContent from './register-component.html';
 import './register-component.scss';
-import './../../styles/main.scss';
 import User from './../../models/user'
 import UserService from '../../services/user-service';
 import Toastr from '../toastr/toastr-component';
@@ -93,7 +92,19 @@ class Register extends HTMLElement{
     }
 
     handlerErrors(error){
-        if(error.code === 'ALR_EXT001') this.showUsernameAlreadyExistsError();
+        switch(error.code){
+            case 'ALR_EXT001':
+                this.showUsernameAlreadyExistsError();
+                break;
+            default:
+                this.undefinedError();
+        }
+    }
+
+    undefinedError(){
+        const submitEl = document.querySelector('#submit-btn');
+        submitEl.classList.remove('loading');
+        submitEl.disabled = false;
     }
 
     showUsernameAlreadyExistsError(){
