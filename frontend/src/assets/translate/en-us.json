@@ -24,7 +24,8 @@
             "max-length-20": "Must have a maximum of 20 characters",
             "username-pattern": "Must not contain special characters or spaces",
             "name-pattern": "Must not contain special characters, numbers or spaces at the ends",
-            "password-pattern": "Must not contain spaces"
+            "password-pattern": "Must not contain spaces",
+            "username-already-exists": "Username already exists"
         },
         "success": {
             "registered": "You have registered successfully",

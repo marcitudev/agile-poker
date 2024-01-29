@@ -122,7 +122,7 @@ class Register extends HTMLElement{
 
         const alreadyExistsErrorEl = document.createElement('small');
         alreadyExistsErrorEl.id = 'username-already-exists';
-        alreadyExistsErrorEl.textContent = ERROR_CODES.ALR_EXT001;
+        alreadyExistsErrorEl.textContent = this.translateService.getTranslation('register.info.username-already-exists');;
         alreadyExistsErrorEl.style.display = 'block';
         parentNode.appendChild(alreadyExistsErrorEl);
     }

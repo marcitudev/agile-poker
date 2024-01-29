@@ -24,7 +24,8 @@
             "max-length-20": "Deve ter no máximo 20 caracteres",
             "username-pattern": "Não deve conter caracteres especiais ou espaços",
             "name-pattern": "Não deve conter caracteres especiais, números ou espaços no começo ou final",
-            "password-pattern": "Não deve conter espaços"
+            "password-pattern": "Não deve conter espaços",
+            "username-already-exists": "Nome de usuário já existe"
         },
         "success": {
             "registration-completed": "Cadastro realizado",
