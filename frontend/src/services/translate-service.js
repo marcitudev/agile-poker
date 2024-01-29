@@ -36,18 +36,20 @@ export default class TranslateService{
     }
 
     getTranslation(key){
-        const keyTree = key.split('.');
+        const splitTranslationKey = key.split('.');
 
-        if(keyTree.length === 1) return this.get(key);
+        if(splitTranslationKey.length === 1) return this.get(key);
 
-        const parentTranslation = this.get(keyTree.shift());
-        return this.translationByTree(keyTree, parentTranslation);
+        const parentTranslation = this.get(splitTranslationKey.shift());
+        return this.childTranslation(splitTranslationKey, parentTranslation);
     }
 
-    translationByTree(keyTree, parentTranslation){
-        const translation = parentTranslation[keyTree.shift()];
-        if(typeof translation == 'object' && keyTree.length > 1) this.translationByTree(keyTree.unshift());
-        else if(typeof translation == 'string' && keyTree.length == 0) return translation;
+    childTranslation(splitTranslationKey, parentTranslation){
+        const key = splitTranslationKey.shift();
+        const translation = parentTranslation[key];
+
+        if(typeof translation === 'object' && splitTranslationKey.length > 0) return this.childTranslation(splitTranslationKey, translation);
+        return translation;
     }
     
     get(key){
