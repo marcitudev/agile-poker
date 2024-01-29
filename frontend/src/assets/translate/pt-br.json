@@ -1,0 +1,43 @@
+{
+    "login": {
+        "welcome-to": "Bem-vindo ao",
+        "form": {
+            "username": "Digite seu nome de usuário",
+            "password": "Digite sua senha"
+        },
+        "dont-have-an-account": "Não tem conta ainda?",
+        "register-now": "Registre-se",
+        "enter": "Entrar"
+    },
+    "register": {
+        "join-us": "Junte-se a nós",
+        "form": {
+            "username": "Seu melhor nome de usuário",
+            "first-name": "Primeiro nome",
+            "last-name": "Sobrenome",
+            "password": "Digite sua senha"
+        },
+        "info": {
+            "min-length-3": "Deve ter pelo menos 3 caracteres",
+            "max-length-30": "Deve ter no máximo 30 caracteres",
+            "min-length-6": "Deve ter pelo menos 6 caracteres",
+            "max-length-20": "Deve ter no máximo 20 caracteres",
+            "username-pattern": "Não deve conter caracteres especiais ou espaços",
+            "name-pattern": "Não deve conter caracteres especiais, números ou espaços no começo ou final",
+            "password-pattern": "Não deve conter espaços"
+        },
+        "success": {
+            "registration-completed": "Cadastro realizado",
+            "registered": "Você se cadastrou com sucesso"
+        },
+        "create-account": "Criar conta",
+        "already-account": "Já tenho uma conta",
+        "login": "Entrar"
+    },
+    "errors": {
+        "login": {
+            "login-failed": "Login falhou",
+            "incorrect-username-or-password": "Nome de usuário ou senha estão incorretos"
+        }
+    }
+}
