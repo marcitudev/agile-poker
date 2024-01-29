@@ -1,4 +1,5 @@
 import AuthenticationService from '../../services/authentication-service';
+import TranslateService from '../../services/translate-service';
 import Toastr from '../toastr/toastr-component';
 import htmlContent from './login-component.html';
 import './login-component.scss';
@@ -12,6 +13,7 @@ class Login extends HTMLElement{
         this.innerHTML = htmlContent;
         this.service = new AuthenticationService();
         this.toastrService = new Toastr();
+        this.translateService = new TranslateService();
         this.submit();
     }
 
@@ -75,7 +77,9 @@ class Login extends HTMLElement{
     }
 
     showLoginFailed(){
-        this.toastrService.error('User or password is incorrect', 'Login failed');
+        const toastrTitle = this.translateService.getTranslation('errors.login.login-failed');
+        const toastrMessage = this.translateService.getTranslation('errors.login.incorrect-username-or-password');
+        this.toastrService.error(toastrMessage, toastrTitle);
         this.disableButtonInErrors();
         setTimeout(() => {
             document.querySelector('#username').value = '';
