@@ -1,4 +1,5 @@
-import translatePtBr from './../assets/translate/pt-br.json';
+import pt_br from './../assets/translate/pt-br.json';
+import en_us from './../assets/translate/en-us.json';
 
 export default class TranslateService{
 
@@ -7,25 +8,29 @@ export default class TranslateService{
     init(){
         const outlet = document.querySelector('#outlet');
         const observer = new MutationObserver(() => {
-            const translateElements = document.querySelectorAll('[translate]');
-            this.translate(translateElements);
+            this.translate();
         });
         
         const config = { childList: true, subtree: true, attributes: false };
         observer.observe(outlet, config);
     }
+
+    translate(){
+        const elements = document.querySelectorAll('[translate]');
+        this.translateElements(elements);
+    }
     
-    translate(translateElements){
-        [...translateElements].forEach(element => {
+    translateElements(elements){
+        [...elements].forEach(element => {
             const translationKey = element.getAttribute('translate');
             const translation = this.getTranslation(translationKey);
             
-            if(translation && typeof translation === 'string') this.setTranslate(element, translation);
-            else this.setTranslate(element, '-- Translation not found --');
+            if(translation && typeof translation === 'string') this.setTranslation(element, translation);
+            else this.setTranslation(element, '-- Translation not found --');
         });
     }
 
-    setTranslate(element, translation){
+    setTranslation(element, translation){
         switch(element.nodeName){
             case 'INPUT':
                 element.setAttribute('placeholder', translation);
@@ -41,7 +46,7 @@ export default class TranslateService{
         if(splitTranslationKey.length === 1) return this.get(key);
 
         const parentTranslation = this.get(splitTranslationKey.shift());
-        return this.childTranslation(splitTranslationKey, parentTranslation);
+        return parentTranslation ? this.childTranslation(splitTranslationKey, parentTranslation) : undefined;
     }
 
     childTranslation(splitTranslationKey, parentTranslation){
@@ -53,6 +58,18 @@ export default class TranslateService{
     }
     
     get(key){
-        return translatePtBr[key];
+        const translationFile = this.getTranslationFile();
+        return translationFile[key];
+    }
+
+    getTranslationFile(){
+        const language = localStorage.getItem('language');
+        switch(language?.toLowerCase()){
+            case 'pt-br':
+                return pt_br;
+            case 'en-us':
+            default:
+                return en_us;
+        }
     }
 }
