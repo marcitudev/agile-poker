@@ -1,0 +1,44 @@
+{
+    "login": {
+        "welcome-to": "Welcome to",
+        "form": {
+            "username": "Enter your username",
+            "password": "Enter your password"
+        },
+        "dont-have-an-account": "Don't have an account yet?",
+        "register-now": "Register now",
+        "enter": "Enter"
+    },
+    "register": {
+        "join-us": "Join us now",
+        "form": {
+            "username": "Your best username",
+            "first-name": "First name",
+            "last-name": "Last name",
+            "password": "Enter your password"
+        },
+        "info": {
+            "min-length-3": "Must have at least 3 characters",
+            "max-length-30": "Must have a maximum of 30 characters",
+            "min-length-6": "Must have at least 6 characters",
+            "max-length-20": "Must have a maximum of 20 characters",
+            "username-pattern": "Must not contain special characters or spaces",
+            "name-pattern": "Must not contain special characters, numbers or spaces at the ends",
+            "password-pattern": "Must not contain spaces",
+            "username-already-exists": "Username already exists"
+        },
+        "success": {
+            "registered": "You have registered successfully",
+            "registration-completed": "Registration completed"
+        },
+        "create-account": "Create account",
+        "already-account": "I already have an account",
+        "login": "Login"
+    },
+    "errors": {
+        "login": {
+            "login-failed": "Login failed",
+            "incorrect-username-or-password": "Username or password is incorrect"
+        }
+    }
+}

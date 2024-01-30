@@ -1,13 +1,8 @@
-import { Router } from '@vaadin/router';
+import routing from './router';
 import './styles/main.scss';
 import './components/login/login-component';
 import './components/register/register-component';
+import TranslateService from './services/translate-service';
 
-const routes = [
-    { path: '/', redirect: '/login' },
-    { path: '/login', component: 'app-login' },
-    { path: '/register', component: 'app-register' }
-]
-
-const router = new Router(document.querySelector('#outlet'));
-router.setRoutes(routes);
+new TranslateService().init();
+routing(document.querySelector('#outlet'));

@@ -4,6 +4,7 @@ import User from './../../models/user'
 import UserService from '../../services/user-service';
 import Toastr from '../toastr/toastr-component';
 import ERROR_CODES from './../../utils/error-constants';
+import TranslateService from '../../services/translate-service';
 
 class Register extends HTMLElement{
     constructor(){
@@ -15,6 +16,7 @@ class Register extends HTMLElement{
     connectedCallback(){
         this.innerHTML = htmlContent;
         this.submit();
+        this.translateService = new TranslateService();
         this.formControlsShowValidations();
     }
 
@@ -83,7 +85,9 @@ class Register extends HTMLElement{
             });
             
             this.service.create(this.buildUser(user)).then(() => {
-                this.toastrService.success('You have registered successfully', 'Registration completed');
+                const toastrTitle = this.translateService.getTranslation('register.success.registration-completed');
+                const toastrMessage = this.translateService.getTranslation('register.success.registered');
+                this.toastrService.success(toastrMessage, toastrTitle);
                 setTimeout(() => {
                     window.location.href = '/login';
                 }, 4000);
@@ -118,7 +122,7 @@ class Register extends HTMLElement{
 
         const alreadyExistsErrorEl = document.createElement('small');
         alreadyExistsErrorEl.id = 'username-already-exists';
-        alreadyExistsErrorEl.textContent = ERROR_CODES.ALR_EXT001;
+        alreadyExistsErrorEl.textContent = this.translateService.getTranslation('register.info.username-already-exists');;
         alreadyExistsErrorEl.style.display = 'block';
         parentNode.appendChild(alreadyExistsErrorEl);
     }
