@@ -39,6 +39,14 @@
         "login": {
             "login-failed": "Login falhou",
             "incorrect-username-or-password": "Nome de usuário ou senha estão incorretos"
-        }
+        },
+        "authentication": {
+            "refresh-token": "Cannot renew this token. Log in again."
+        },
+        "unexpected": {
+            "title": "Erro inesperado",
+            "message": "Espere um momento e tente novamente"
+        },
+        "session-expired": "Sessão expirada"
     }
 }
