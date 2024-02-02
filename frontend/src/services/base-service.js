@@ -1,9 +1,11 @@
 import Toastr from "../components/toastr/toastr-component";
+import TranslateService from "./translate-service";
 
 export default class BaseService{
 
     constructor(){
         this.toastrService = new Toastr();
+        this.translateService = new TranslateService();
     }
 
     get(url, params = {}){
@@ -50,7 +52,9 @@ export default class BaseService{
                     resolve(data);
                 })
             }).catch(e => {
-                this.toastrService.error('Wait a moment and try again', 'Unexpected error');
+                const title = this.translateService.getTranslation('errors.unexpected.title');
+                const message = this.translateService.getTranslation('errors.unexpected.message');
+                this.toastrService.error(message, title);
                 reject(e);
             });
         });
