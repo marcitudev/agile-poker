@@ -3,6 +3,7 @@ import TranslateService from '../../services/translate-service';
 import Toastr from '../toastr/toastr-component';
 import htmlContent from './login-component.html';
 import './login-component.scss';
+import { Router } from '@vaadin/router';
 
 class Login extends HTMLElement{
     constructor(){
@@ -37,8 +38,8 @@ class Login extends HTMLElement{
             }
 
             const {username, password} = authUser;
-            this.service.authenticate(username, password).then((response) => {
-                sessionStorage.setItem('access-token', response.token);
+            this.service.authenticate(username, password).then(() => {
+                Router.go('/home');
             }).catch(e => {
                 this.showLoginFailed();
             });
@@ -96,8 +97,6 @@ class Login extends HTMLElement{
             submitEl.disabled = false;
         }, 1000);
     }
-
-    
 }
 
 customElements.define('app-login', Login);
