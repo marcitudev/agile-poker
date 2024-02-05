@@ -1,11 +1,15 @@
 import Toastr from "../components/toastr/toastr-component";
+import HttpRequest from "../utils/http-request";
+import AuthenticationService from "./authentication-service";
 import TranslateService from "./translate-service";
+import { Router } from "@vaadin/router";
 
 export default class BaseService{
 
     constructor(){
         this.toastrService = new Toastr();
         this.translateService = new TranslateService();
+        this.authenticationService = new AuthenticationService();
     }
 
     get(url, params = {}){
@@ -25,38 +29,8 @@ export default class BaseService{
     }
 
     request(method, url, params = {}){
-        return new Promise((resolve, reject) => {
-            let request;
-            
-            switch(method.toUpperCase()){
-                case 'GET':
-                    request = {
-                        method
-                    };
-                    break;
-                default:
-                    request = {
-                        method,
-                        body: JSON.stringify(params),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    };
-            }
-
-            fetch(url, request).then(response => {
-                response.json().then(data => {
-                    if(!response.ok){
-                        reject(data);
-                    }
-                    resolve(data);
-                })
-            }).catch(e => {
-                const title = this.translateService.getTranslation('errors.unexpected.title');
-                const message = this.translateService.getTranslation('errors.unexpected.message');
-                this.toastrService.error(message, title);
-                reject(e);
-            });
-        });
+        this.authenticationService.verifyTokenExpiration().then(() => {
+            return HttpRequest.request(method, url, params);
+        }).catch(() => Router.go('/login'));
     }
 }
