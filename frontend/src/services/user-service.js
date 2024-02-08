@@ -1,4 +1,5 @@
 import { API_URL } from "../../enviroment";
+import HttpRequest from "../utils/http-request";
 import BaseService from "./base-service";
 
 export default class UserService{
@@ -8,8 +9,7 @@ export default class UserService{
         this.baseService = new BaseService();
     }
 
-
     create(user){
-        return this.baseService.post(this.BASE_URL, user);
+        return HttpRequest.request('POST', this.BASE_URL, user);
     }
 }

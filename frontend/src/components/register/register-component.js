@@ -3,8 +3,8 @@ import './register-component.scss';
 import User from './../../models/user'
 import UserService from '../../services/user-service';
 import Toastr from '../toastr/toastr-component';
-import ERROR_CODES from './../../utils/error-constants';
 import TranslateService from '../../services/translate-service';
+import { Router } from '@vaadin/router';
 
 class Register extends HTMLElement{
     constructor(){
@@ -89,7 +89,7 @@ class Register extends HTMLElement{
                 const toastrMessage = this.translateService.getTranslation('register.success.registered');
                 this.toastrService.success(toastrMessage, toastrTitle);
                 setTimeout(() => {
-                    window.location.href = '/login';
+                    Router.go('/login');
                 }, 4000);
             }).catch(e => this.handlerErrors(e));
         });
