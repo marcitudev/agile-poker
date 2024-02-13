@@ -48,5 +48,9 @@
             "message": "Wait a moment and try again"
         },
         "session-expired": "Session expired"
+    },
+    "language-names": {
+        "en-us": "English",
+        "pt-br": "Brazilian Portuguese"
     }
 }
