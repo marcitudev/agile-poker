@@ -1,0 +1,68 @@
+@import './../../styles/variables.scss';
+
+$shadow-color: hsl(0, 0%, 85%);
+
+.translation-container .language{
+    display: flex;
+    position: relative;
+    
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+.translation-container .language .selected {
+    display: flex;
+    align-items: center;
+}
+
+.translation-container .language .selected .flag {
+    margin-right: 6px;
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+.translation-container .language .selected .arrow {
+    width: 0;
+    height: 0;
+    border-left: .4rem solid transparent;
+    border-right: .4rem solid transparent;
+    border-bottom: .5rem solid $main-black;
+}
+
+.arrow-rotate{
+    transform: rotate(180deg);
+}
+
+.translation-container .language .language-options{
+    position: absolute;
+    background-color: $main-white;
+    top: 180%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    box-shadow: 1px 1px 20px $shadow-color;
+    border-radius: 6px;
+}
+
+.translation-container .language .language-options div{
+    display: flex;
+    border-radius: 6px;
+    padding: 10px 20px;
+    text-wrap: nowrap;
+    color: white;
+
+    &:hover{
+        cursor: pointer;
+        background-color: $main;
+
+        span {
+            color: $main-white;
+        }
+    }
+}
+
+img.flag{
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-right: 8px;
+}
