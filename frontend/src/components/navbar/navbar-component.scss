@@ -17,7 +17,7 @@
     width: 70%;
 }
 
-.navbar-container .profile{
+.navbar-container .options .option{
     display: flex;
     align-items: center;
 }
@@ -29,7 +29,11 @@
 
 .navbar-container .profile .profile-img{
     border-radius: 100%;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     background-color: red;
+}
+
+.navbar-container .translation{
+    margin-right: 15px;
 }
