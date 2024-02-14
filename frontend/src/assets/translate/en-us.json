@@ -1,4 +1,7 @@
 {
+    "generic": {
+        "config": "Settings"
+    },
     "login": {
         "welcome-to": "Welcome to",
         "form": {
@@ -7,7 +10,8 @@
         },
         "dont-have-an-account": "Don't have an account yet?",
         "register-now": "Register now",
-        "enter": "Enter"
+        "enter": "Enter",
+        "logout": "Log out"
     },
     "register": {
         "join-us": "Join us now",
