@@ -22,12 +22,12 @@ button{
 }
 
 .invalid-click{
-    background-color: $something-wrong;
+    background-color: $error;
     animation: shake .3s;
 }
 
 .invalid-click:hover{
-    background-color: $something-wrong !important;
+    background-color: $error !important;
 }
 
 @keyframes shake {
