@@ -14,12 +14,10 @@ export class Translation extends HTMLElement{
         this.translateService = new TranslateService();
         this.languages = [
             {
-                name: 'English',
                 initials: 'en-us',
                 flag: unitedStates
             },
             {
-                name: 'Brazilian Portuguese',
                 initials: 'pt-br',
                 flag: brazil
             }
@@ -31,16 +29,11 @@ export class Translation extends HTMLElement{
     selectedLanguage(){
         const selectedLanguage = localStorage.getItem('language');
 
-        if(!selectedLanguage) {
-            this.setDefaultLanguage();
-            return;
-        }
-
-        const language = this.languages.find(lang => lang.initials?.toLowerCase() === selectedLanguage?.toLowerCase());
+        const language = selectedLanguage ? this.languages.find(lang => lang.initials?.toLowerCase() === selectedLanguage?.toLowerCase()) : null;
         if(language) {
             this.setSelectedLanguageImg(language);
         } else {
-            setDefaultLanguage();
+            this.setDefaultLanguage();
         }
     }
 
@@ -81,7 +74,8 @@ export class Translation extends HTMLElement{
             flagImg.alt = language.initials;
 
             const languageName = document.createElement('span');
-            languageName.textContent = language.name;
+            const translationName = this.translateService.getTranslation(`language-names.${language.initials}`);
+            languageName.textContent = translationName;
             languageName.setAttribute('translate', `language-names.${language.initials}`);
 
             languageDiv.appendChild(flagImg);            
