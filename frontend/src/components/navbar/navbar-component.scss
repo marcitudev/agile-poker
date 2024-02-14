@@ -28,12 +28,47 @@
 }
 
 .navbar-container .profile .profile-img{
+    position: relative;
     border-radius: 100%;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.1rem;
+    height: 2.1rem;
     background-color: red;
+
+    &:hover{
+        cursor: pointer;
+    }
 }
 
 .navbar-container .translation{
     margin-right: 15px;
+}
+
+.navbar-container .profile .profile-img .profile-options{
+    position: absolute;
+    background-color: $main-white;
+    top: 130%;
+    right: 0;
+    box-shadow: 1px 1px 20px $shadow-color;
+    border-radius: 6px;
+}
+
+.navbar-container .profile .profile-img .profile-options div{
+    display: flex;
+    border-radius: 6px;
+    padding: 10px 20px;
+    text-wrap: nowrap;
+
+    &:hover{
+        cursor: pointer;
+        background-color: $main;
+
+        span {
+            color: $main-white;
+        }
+    }
+}
+
+.logout:hover{
+    background-color: $main-red !important;
+    color: $main-white;
 }
