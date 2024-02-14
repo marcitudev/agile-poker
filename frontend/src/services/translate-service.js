@@ -6,13 +6,12 @@ export default class TranslateService{
     constructor(){}
 
     init(){
-        const outlet = document.querySelector('#outlet');
         const observer = new MutationObserver(() => {
             this.translate();
         });
-        
+            
         const config = { childList: true, subtree: true, attributes: false };
-        observer.observe(outlet, config);
+        observer.observe(document, config);
     }
 
     translate(){
