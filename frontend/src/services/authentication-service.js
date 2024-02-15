@@ -56,6 +56,11 @@ export default class AuthenticationService{
         });
     }
 
+    get getLoggedUser(){
+        const token = localStorage.getItem('access-token');
+        return this.decodeJWT(token);
+    }
+
     clearToken(){
         localStorage.removeItem('access-token');
         localStorage.removeItem('refresh-token');
