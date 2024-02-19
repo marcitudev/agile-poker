@@ -15,7 +15,18 @@ class Login extends HTMLElement{
         this.service = new AuthenticationService();
         this.toastrService = new Toastr();
         this.translateService = new TranslateService();
+        this.addTranslation();
         this.submit();
+    }
+
+    addTranslation(){
+        setTimeout(() => {
+            const translationEl = document.createElement('app-translation');
+            const loginBoxEl = document.querySelector('.login-box');
+            const loginFormEl = document.querySelector('#login-form');
+            loginBoxEl.insertBefore(translationEl, loginFormEl);
+
+        }, 100);
     }
 
     submit(){

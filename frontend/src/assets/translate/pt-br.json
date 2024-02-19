@@ -1,4 +1,7 @@
 {
+    "generic": {
+        "config": "Configurações"
+    },
     "login": {
         "welcome-to": "Bem-vindo ao",
         "form": {
@@ -7,7 +10,8 @@
         },
         "dont-have-an-account": "Não tem conta ainda?",
         "register-now": "Registre-se",
-        "enter": "Entrar"
+        "enter": "Entrar",
+        "logout": "Sair"
     },
     "register": {
         "join-us": "Junte-se a nós",

@@ -12,7 +12,7 @@
 }
 
 .form-control:invalid{
-    border-color: $something-wrong;
+    border-color: $error;
 }
 
 .form-control::placeholder{
@@ -20,7 +20,7 @@
 }
 
 .red-border{
-    border-color: $something-wrong !important;
+    border-color: $error !important;
 }
 
 small{

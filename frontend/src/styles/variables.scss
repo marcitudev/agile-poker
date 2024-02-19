@@ -1,7 +1,16 @@
+/*main colors*/
 $main: hsl(126, 36%, 62%);
 $main-dark: hsl(126, 24%, 52%);
 $main-black: hsl(337, 13%, 20%);
 $main-white: hsl(150, 100%, 98%);
+$main-red: hsl(354, 70%, 50%);
+
+/*secondary colors*/
 $light-gray: hsl(0, 0%, 50%);
-$something-wrong: hsl(354, 70%, 50%);
+
+/*status colors*/
+$error: $main-red;
 $warning: hsl(29, 89%, 58%);
+
+/*utils colors*/
+$shadow-color: hsla(0, 0%, 27%, 0.2);

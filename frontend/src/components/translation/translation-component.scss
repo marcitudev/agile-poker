@@ -1,9 +1,6 @@
 @import './../../styles/variables.scss';
 
-$shadow-color: hsl(0, 0%, 85%);
-
 .translation-container .language{
-    display: flex;
     position: relative;
     
     &:hover{
@@ -49,7 +46,6 @@ $shadow-color: hsl(0, 0%, 85%);
     border-radius: 6px;
     padding: 10px 20px;
     text-wrap: nowrap;
-    color: white;
 
     &:hover{
         cursor: pointer;
