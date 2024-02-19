@@ -43,8 +43,7 @@
     flex-direction: column;
     align-items: center;
     margin-top: 40px;
-    min-width: 350px;
-    width: 60%;
+    max-width: 450px;
 }
 
 .login-container form p{
@@ -63,9 +62,4 @@
     &:hover{
         color: $main;
     }
-}
-
-.login-container .login-box app-translation{
-    margin-top: 10px;
-    margin-bottom: -20px;
 }
