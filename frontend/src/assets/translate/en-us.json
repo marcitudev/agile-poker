@@ -1,6 +1,8 @@
 {
     "generic": {
-        "config": "Settings"
+        "config": "Settings",
+        "room-name-or-code": "Enter room name or code",
+        "create-a-new-room": "Create a new room"
     },
     "login": {
         "welcome-to": "Welcome to",

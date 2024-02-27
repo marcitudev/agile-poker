@@ -1,6 +1,8 @@
 {
     "generic": {
-        "config": "Configurações"
+        "config": "Configurações",
+        "room-name-or-code": "Digite o nome ou o código da sala",
+        "create-a-new-room": "Criar uma nova sala"
     },
     "login": {
         "welcome-to": "Bem-vindo ao",
