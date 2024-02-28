@@ -1,5 +1,5 @@
-import pt_br from './../assets/translate/pt-br.json';
-import en_us from './../assets/translate/en-us.json';
+import pt_br from '../../assets/translate/pt-br.json';
+import en_us from '../../assets/translate/en-us.json';
 
 export default class TranslateService{
 

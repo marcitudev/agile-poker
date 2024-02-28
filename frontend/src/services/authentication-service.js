@@ -1,6 +1,6 @@
 import { API_URL } from "../../enviroment";
 import Toastr from "../components/toastr/toastr-component";
-import TranslateService from "./translate-service";
+import TranslateService from "./component-services/translate-service";
 import HttpRequest from "../utils/http-request";
 
 export default class AuthenticationService{
