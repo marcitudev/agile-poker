@@ -15,6 +15,10 @@
     border-color: $error;
 }
 
+.form-control:disabled{
+    background-color: $gray-1;
+}
+
 .form-control::placeholder{
     color: $light-gray;
 }
