@@ -1,6 +1,6 @@
 import { Router } from '@vaadin/router';
 import AuthenticationService from './services/authentication-service';
-import TranslateService from './services/translate-service';
+import TranslateService from './services/component-services/translate-service';
 import Toastr from './components/toastr/toastr-component';
 
 const routes = [
