@@ -1,8 +1,8 @@
-import Toastr from "../components/toastr/toastr-component";
-import HttpRequest from "../utils/http-request";
-import AuthenticationService from "./authentication-service";
-import TranslateService from "./translate-service";
-import { Router } from "@vaadin/router";
+import Toastr from '../components/toastr/toastr-component';
+import HttpRequest from '../utils/http-request';
+import AuthenticationService from './authentication-service';
+import TranslateService from './component-services/translate-service';
+import { Router } from '@vaadin/router';
 
 export default class BaseService{
 

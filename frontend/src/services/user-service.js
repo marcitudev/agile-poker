@@ -1,6 +1,6 @@
-import { API_URL } from "../../enviroment";
-import HttpRequest from "../utils/http-request";
-import BaseService from "./base-service";
+import { API_URL } from '../../enviroment';
+import HttpRequest from '../utils/http-request';
+import BaseService from './base-service';
 
 export default class UserService{
 
