@@ -4,30 +4,43 @@ button{
     cursor: pointer;
 }
 
-.btn-primary{
-    border: none;
+.btn{
     border-radius: 8px;
     height: 58px;
-    width: 100%;
     padding: 10px;
-    background-color: $main;
     margin-block: 10px;
     font-weight: 700;
-    color: white;
     transition: background-color .3s ease;
 }
 
-.btn-primary:hover{
-    background-color: $main-dark;
+.btn-primary{
+    border: none;
+    width: 100%;
+    background-color: $main;
+    color: white;
+
+    &:hover{
+        background-color: $main-dark;
+    }
+}
+
+.btn-ghost{
+    border: 2px solid $main-black;
+    background-color: transparent;
+    color: $main-black;
+
+    &:hover{
+        background-color: $gray-1;
+    }
 }
 
 .invalid-click{
     background-color: $error;
     animation: shake .3s;
-}
 
-.invalid-click:hover{
-    background-color: $error !important;
+    &:hover{
+        background-color: $error !important;
+    }
 }
 
 @keyframes shake {
