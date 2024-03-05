@@ -1,13 +1,13 @@
-import ModalSize from '../../enums/ModalSize';
-
 export default class ModalService{
 
     constructor(
         tagName,
-        size
+        size,
+        maxSize = null
     ){
         this.tagName = tagName;
         this.size = size;
+        this.maxSize = maxSize;
     }
 
     openModal(){
@@ -16,8 +16,9 @@ export default class ModalService{
 
         const modal = document.createElement(this.tagName);
         modal.style.cssText = `
-            width: ${this.size || 40}%;
+            width: ${this.size || '40%'};
             min-width: 350px;
+            max-width: ${this.maxSize ? this.maxSize : 'none'};
         `;
 
         const backdrop = document.createElement('div');
@@ -34,7 +35,11 @@ export default class ModalService{
             justify-content: center;
         `;
 
-        backdrop.addEventListener('click', () => this.closeModal());
+        backdrop.addEventListener('click', (event) => {
+            if (event.target === backdrop) {
+                this.closeModal();
+            }
+        });
 
         modalTemplate.appendChild(backdrop);
         backdrop.appendChild(modal);
