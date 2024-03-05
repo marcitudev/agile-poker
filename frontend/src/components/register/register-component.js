@@ -3,7 +3,7 @@ import './register-component.scss';
 import User from './../../models/user'
 import UserService from '../../services/user-service';
 import Toastr from '../toastr/toastr-component';
-import TranslateService from '../../services/translate-service';
+import TranslateService from '../../services/component-services/translate-service';
 import { Router } from '@vaadin/router';
 
 class Register extends HTMLElement{

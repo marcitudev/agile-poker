@@ -1,5 +1,5 @@
-import Toastr from "../components/toastr/toastr-component";
-import TranslateService from "../services/component-services/translate-service";
+import Toastr from '../components/toastr/toastr-component';
+import TranslateService from '../services/component-services/translate-service';
 
 export default class HttpRequest{
     constructor(){}

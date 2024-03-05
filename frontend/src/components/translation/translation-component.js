@@ -2,7 +2,7 @@ import htmlContent from './translation-component.html';
 import './translation-component.scss';
 import brazil from './../../assets/flags/brazil.svg';
 import unitedStates from './../../assets/flags/united-states.svg';
-import TranslateService from './../../services/translate-service';
+import TranslateService from './../../services/component-services/translate-service';
 
 export class Translation extends HTMLElement{
     constructor(){

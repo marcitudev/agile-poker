@@ -1,5 +1,5 @@
 import AuthenticationService from '../../services/authentication-service';
-import TranslateService from '../../services/translate-service';
+import TranslateService from '../../services/component-services/translate-service';
 import Toastr from '../toastr/toastr-component';
 import htmlContent from './login-component.html';
 import './login-component.scss';
