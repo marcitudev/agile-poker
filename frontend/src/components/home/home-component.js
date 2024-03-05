@@ -1,7 +1,7 @@
 import htmlContent from './home-component.html';
 import './home-component.scss';
 import ModalService from '../../services/component-services/modal-service';
-import ModalSize from '../../enums/ModalSize';
+import ModalSize from '../../enums/modal-size';
 
 class Home extends HTMLElement{
 
@@ -11,8 +11,16 @@ class Home extends HTMLElement{
 
     connectedCallback(){
         this.innerHTML = htmlContent;
-        this.createModal = new ModalService('app-create-room', ModalSize.SMALL);
+        this.createModal = new ModalService('modal-create-room', ModalSize.MEDIUM, '700px');
         this.createModal.openModal();
+        this.openModalToCreateRoom();
+    }
+
+    openModalToCreateRoom(){
+        const createRoomBtn = document.querySelector('.create-room-btn');
+        createRoomBtn.addEventListener('click', () => {
+            this.createModal.openModal();
+        });
     }
 }
 
