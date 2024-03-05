@@ -3,5 +3,67 @@
 .create-room-modal-container{
     background-color: $main-white;
     border-radius: 6px;
-    padding: 15px;
+    padding: 25px;
+}
+
+.create-room-modal-container .modal-title{
+    font-size: 1rem;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+
+.create-room-modal-container form div + div{
+    margin-block: 15px;
+}
+
+.create-room-modal-container form .password{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.create-room-modal-container form label{
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.create-room-modal-container form .password input[type="checkbox"]{
+    transform: scale(1.2);
+}
+
+.create-room-modal-container form .card-values .card-value-type{
+    margin-block: 10px;
+    height: fit-content !important;
+    width: fit-content !important;
+    border: none;
+    border-radius: 30px;
+    font-size: .8rem;
+    transition: background-color .3s ease;
+    padding: 5px 15px;
+    background-color: $gray-2;
+
+    &:hover{
+        background-color: $gray-3;
+    }
+}
+
+#card-value-type-example{
+    word-spacing: .7rem;
+}
+
+.create-room-modal-container form .card-values .selected{
+    background-color: $main;
+    color: $main-white;
+
+    &:hover{
+        background-color: $main !important;
+    }
+}
+
+.create-room-modal-container form .action-buttons button{
+    height: 48px !important;
+    width: fit-content;
+    min-width: 100px;
 }
