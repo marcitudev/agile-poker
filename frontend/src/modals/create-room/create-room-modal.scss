@@ -49,12 +49,12 @@
     }
 }
 
-#card-value-type-example{
+.create-room-modal-container form .card-values #card-value-type-example{
     word-spacing: .7rem;
 }
 
-.create-room-modal-container form .card-values .selected{
-    background-color: $main;
+.create-room-modal-container form .card-values button[selected]{
+    background-color: $main !important;
     color: $main-white;
 
     &:hover{

@@ -2,12 +2,18 @@
     <h1 class="modal-title">Create a new room</h1>
     <form novalidate id="create-room-form">
         <div class="name">
-            <input type="text" class="form-control" placeholder="Enter a cool name for your room">
+            <input type="text" class="form-control" minlength="3" maxlength="50" pattern="^[\p{L}\p{M}0-9_\s]+$" placeholder="Enter a cool name for your room">
+            <small class="min-length" translate="register.info.min-length-3">Must have at least 3 characters</small>
+            <small class="max-length" translate="register.info.max-length-50">Must have a maximum of 50 characters</small>
+            <small class="pattern" translate="register.info.name-pattern">Must not contain special characters, numbers or spaces at the ends</small>
         </div>
         <div class="password">
             <label>Password</label>
             <input type="checkbox" id="password-toggle">
-            <input type="password" id="password-input" class="form-control" placeholder="Enter a password for your room" disabled>
+            <input type="password" id="password-input" class="form-control" minlength="6" maxlength="20" pattern="^[^\s]+$" placeholder="Enter a password for your room" disabled>
+            <small class="min-length" translate="register.info.min-length-3">Must have at least 3 characters</small>
+            <small class="max-length" translate="register.info.max-length-20">Must have a maximum of 20 characters</small>
+            <small class="pattern" translate="register.info.password-pattern">Must not contain spaces</small>
         </div>
         <div class="card-values"> 
             <label>Choose the card values</label> <br>

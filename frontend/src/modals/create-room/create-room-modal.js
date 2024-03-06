@@ -26,15 +26,12 @@ class CreateRoom extends HTMLElement{
     cardValueTypeSelection(){
         const cardValueTypesEl = document.querySelector('.card-values');
         const cardValueTypesOptionsEl = cardValueTypesEl.querySelectorAll('.card-value-type');
+
         [...cardValueTypesOptionsEl].forEach(cardValueType => {
             cardValueType.dataset.type = cardValueType.id === 'sequential' ? SEQUENTIAL : FIBONACCI;
             cardValueType.addEventListener('click', () => {
-                [...cardValueTypesOptionsEl].map(cardValueTypeEl => {
-                    cardValueTypeEl.removeAttribute('selected');
-                    cardValueTypeEl.classList.remove('selected');
-                });
+                [...cardValueTypesOptionsEl].map(cardValueTypeEl => cardValueTypeEl.removeAttribute('selected'));
                 cardValueType.setAttribute('selected', '');
-                cardValueType.classList.add('selected');
                 const cardValueTypeExample = document.querySelector('#card-value-type-example');
                 cardValueTypeExample.innerHTML = cardValueType.dataset.type.replaceAll(',', ' ');
             });
