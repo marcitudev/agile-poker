@@ -35,16 +35,20 @@ export default class ModalService{
             justify-content: center;
         `;
 
+        
+        modalTemplate.appendChild(backdrop);
+        backdrop.appendChild(modal);
+        
+        document.body.appendChild(modalTemplate);
+        
+        const modalCloseEl = modal.querySelector('[closemodal]');
+        if(modalCloseEl && modalCloseEl instanceof HTMLElement) modalCloseEl.addEventListener('click', () => this.closeModal()); 
+
         backdrop.addEventListener('click', (event) => {
             if (event.target === backdrop) {
                 this.closeModal();
             }
         });
-
-        modalTemplate.appendChild(backdrop);
-        backdrop.appendChild(modal);
-
-        document.body.appendChild(modalTemplate);
     }
 
     closeModal(){
